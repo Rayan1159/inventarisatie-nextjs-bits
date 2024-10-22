@@ -1,0 +1,124 @@
+* {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+html {
+  background-image: url(../logo.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  width: 100
+}
+
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  width: 100%;
+  height: 100vh;
+}
+
+.login .logo {
+  width: 25vw;
+  height: 16vh;
+  margin-bottom: 7.5vh;
+  background-image: url(../bits-logo.png);
+  background-repeat: no-repeat;
+  background-position: 1;
+  background-size: cover;
+  padding-bottom: 3vh;
+}
+
+.login .login-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgb(20, 70, 78, 0.9);
+  width: 50%;
+  height: 100%;
+  padding-bottom: 8.5vh;
+}
+
+.create-admin-notification {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 8.5vh;
+  height: 100vh;
+  width: 100vw;
+  border-radius: 10px;
+}
+
+.admin-notification {
+  margin-top: 1vh;
+  background: rgb(20, 70, 78, 0.9);
+  color: white;
+  width: 15vw;
+  height: 30vh;
+}
+
+.generate-admin-button {
+  color: white;
+  background-color: brown;
+  border: none;
+  border-radius: 10px;
+  height: 3vh;
+  width: 15vw;
+  margin-top: 12px;
+  font-weight: bolder;
+}
+
+.login-buttons {
+  display: flex;
+  justify-content: center;
+  width: 100vw
+}
+
+.login-button {
+  width: 21.5%;
+  height: 3vh;
+  border-radius: 10px;
+  background-color: rgb(211, 250, 250, 0.9);
+  color: rgb(26, 100, 100);
+} 
+
+
+.input-fields {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+}
+
+input {
+  width: 24vw;
+  height: 3vh;
+  border-radius: 10px;
+  background: rgb(white, white, white, 0.9);
+  border: 1px solid rgb(132, 132, 236);
+  margin-bottom: 3vh;
+}
+
+input::placeholder {
+  text-align: center;
+}
+
+@media only screen and (max-width: 375px) {
+  .logo {
+    display: none;
+  }
+
+  .login-button {
+    width: 40%;
+  }
+
+  input {
+    width: 100%;
+  }
+}

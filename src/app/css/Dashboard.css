@@ -1,0 +1,136 @@
+* {
+    overflow: hidden;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+}
+
+input { margin-bottom: 2rem; }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.dashboard-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 65vh;
+    width: 100%;
+}
+
+.dashboard-workfield {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: rgb(172, 237, 242);
+    height: 100%;
+    width: 60%;
+    z-index: 1;
+    border-radius: 10px;
+    position: relative;
+}   
+
+.workfield-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    background-color: rgba(233, 70, 70, 0.8);
+    top: 20.9%;
+    width: 60%;
+    height: 6.5%;
+    position: fixed;
+    z-index: 2;
+    border-radius: 10px 10px 0 0;
+}
+
+.workfield-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 3.5rem;
+}
+
+.inventory-button-group {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    padding-inline: 0.5rem;
+}
+
+.open-new-category {
+    background-color: rgb(227, 88, 19);
+    color: white;
+    border-radius: 3px;
+    margin-bottom: 0.2rem;
+    font-weight: bold;
+    font-size: 1.3rem;
+    border: none;
+    width: 25%;
+    height: 5vh;
+}
+
+.open-interface {
+    background-color: rgb(166, 123, 67);
+    border-radius: 3px;
+    margin-bottom: 0.2rem;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 1.3rem;
+    width: 25%;
+    height: 5vh;
+}
+
+.category-new {
+    display: flex;
+}
+
+.category-new:first-child {
+    margin-bottom: 7.5rem;
+}
+
+.category-new .category-name {
+    border: 1px solid black;
+    margin-bottom: 1.5rem;
+}
+
+.new-item-category {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    gap: 0.5em;
+}
+
+.add-new-row {
+    font-size: 3rem;
+    color: greenyellow;
+}
+
+
+
+.add-btn {
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 375px) {
+    /* TODO: Responsiveness for dashboard implementeren */
+}
