@@ -29,7 +29,7 @@ export function AuthCard() {
       return;
     }
     
-    if (username === "admin" && password === "admin") {
+    if (username === "admin" && password === "bb@15$1") {
       setUserStoreData({
         username: username,
         permissionLevel: 1,
