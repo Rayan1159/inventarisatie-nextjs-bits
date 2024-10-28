@@ -12,7 +12,10 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/material": "^6.1.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
     "ag-grid-react": "^32.3.0",
+    "cors": "^2.8.5",
     "next": "15.0.0",
     "react": "19.0.0-rc-65a56d0e-20241020",
     "react-dom": "19.0.0-rc-65a56d0e-20241020"
