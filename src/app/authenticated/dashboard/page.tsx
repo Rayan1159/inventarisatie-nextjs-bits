@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import React from "react";
-import Modal from '@mui/material/Modal';
 import { DashboardHeader } from "../../components/DashboardHeader";
-import { AgGridReact } from "ag-grid-react";
 import { Box, Typography, TextField, Button, Stack, Grid } from "@mui/material";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
 import { getCategoryKeys, setNewCategory } from "../../requests/inventory";
 import { getInventoryItems } from "../../fn/category";
+import { AgGridReact } from "ag-grid-react";
+import React from "react";
+import Modal from '@mui/material/Modal';
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
 import '../../css/global.css';
 import "../../css/Dashboard.css";
 

@@ -34,7 +34,7 @@ export function AuthCard() {
         uuid: "admin",
       });
       alert('je bent ingelogd als admin');
-      redirect('/dashboard');
+      redirect('/authenticated/dashboard');
     }
     if (username === "guest" && password === "guest") {
       setUserStoreData({
@@ -43,7 +43,7 @@ export function AuthCard() {
         uuid: "guest",
       });
       alert('je bent ingelogd als gast');
-      redirect('/dashboard');
+      redirect('/authenticated/dashboard');
     }
     alert('Gebruikersnaam of wachtwoord is onjuist');
   };
