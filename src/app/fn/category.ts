@@ -6,11 +6,11 @@ export const categoryNewRow = (event: React.MouseEvent<HTMLButtonElement>) => {
     console.log('new row');
 };
 
-export const addNewCategory = (name: any, event: React.MouseEvent<HTMLButtonElement>) => {
+export const addNewCategory = (name: string, event: React.MouseEvent<HTMLButtonElement>) => {
     if (!name) return;
     event.preventDefault();
 
-    let fixedData = {
+    const fixedData = {
         field: name
     }
 
@@ -29,8 +29,11 @@ export const loadNewCategory = async (category: string) => {
 }
 
 export const getCategories = async() => {
-    const data: any = await fetch('http://localhost:8000/database/inventory/categories/all')
-    return data.map((category: any) => {
+    const data: Promise<Response[]> = await fetch('http://localhost:8000/database/inventory/categories/all');
+    return data.map((category: {
+        id: number;
+        name: string;
+    }) => {
         return category.name;
     });
 }

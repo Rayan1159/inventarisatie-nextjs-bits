@@ -1,7 +1,9 @@
+"use client"
+
 import { HeaderNav } from "./SubComponents/HeaderNav";
 import React, { useEffect, useState } from "react";
-import { loadNewCategory } from "../fn/category";
 import { getCategoryKeys } from "../requests/inventory";
+import Link from "next/link";
 
 interface DashboardHeaderProps {
   headerNavClassname?: string;
@@ -9,24 +11,9 @@ interface DashboardHeaderProps {
   setCategoryState: (category: string) => void;
 }
 
-export function DashboardHeader({ headerNavClassname, categoryState, setCategoryState }: DashboardHeaderProps) {
+export function DashboardHeader({ headerNavClassname }: DashboardHeaderProps) {
   const [selectValue, setSelectValue] = useState("");
   const [selectItems, setSelectItems] = useState<React.ReactNode[]>([]);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const updateCategory = async () => {
-    const targetSelect = selectValue;
-    if (targetSelect === "Select category") {
-      return; 
-    }
-
-    if (targetSelect === categoryState) return;
-
-    const loadedCategory = await loadNewCategory(targetSelect);
-    if (loadedCategory == null) return;
-
-    setCategoryState(loadedCategory);
-  }
 
   const selectMenuStyle = {
     backgroundColor: "transparent",
@@ -54,7 +41,7 @@ export function DashboardHeader({ headerNavClassname, categoryState, setCategory
       <nav className={headerNavClassname}>
         <HeaderNav>
           <li>
-            <Link to="/logout">Logout</Link>
+            <Link href="/logout">Logout</Link>
           </li>
           <li> 
             <select 

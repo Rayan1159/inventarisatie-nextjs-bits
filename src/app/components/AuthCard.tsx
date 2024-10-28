@@ -2,9 +2,7 @@
 
 import React from "react";
 import { setUserStoreData } from "../storage/storage";
-
 import { redirect } from "next/navigation";
-
 
 export function AuthCard() {
   const [userData, setUserData] = React.useState<{
