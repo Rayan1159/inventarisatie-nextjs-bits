@@ -4,7 +4,7 @@ import {
     useEffect
 } from "react";
 
-import { getUserStoreData } from "../storage/storage";
+import { getUserStoreData } from "@/app/storage/storage";
 import { redirect } from "next/navigation";
 
 export default function logout() {

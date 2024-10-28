@@ -1,7 +1,11 @@
-import { application, urlencoded, json } from "express";
-import sequelize from "./database/sequelize";
 import cors from "cors";
-import "react-dom/server";
+import sequelize from "./database/sequelize";
+
+import {
+   application, 
+   urlencoded, 
+   json 
+} from "express";
 
 const app = application;
 
@@ -24,7 +28,6 @@ app.use(cors());
 
 app.use("/backend");
 app.use("/database");
-
 
 const LISTENING_PORT = 8000;
 

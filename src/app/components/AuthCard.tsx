@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import { setUserStoreData } from "../storage/storage";
 import { redirect } from "next/navigation";
+
+import { setUserStoreData } from "@/app/storage/storage";
 
 export function AuthCard() {
   const [userData, setUserData] = React.useState<{
@@ -36,6 +37,7 @@ export function AuthCard() {
       alert('je bent ingelogd als admin');
       redirect('/authenticated/dashboard');
     }
+
     if (username === "guest" && password === "guest") {
       setUserStoreData({
         username: username,
@@ -45,6 +47,7 @@ export function AuthCard() {
       alert('je bent ingelogd als gast');
       redirect('/authenticated/dashboard');
     }
+
     alert('Gebruikersnaam of wachtwoord is onjuist');
   };
 

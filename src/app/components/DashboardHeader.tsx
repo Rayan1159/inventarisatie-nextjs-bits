@@ -1,8 +1,9 @@
 "use client"
 
-import { HeaderNav } from "./SubComponents/HeaderNav";
+import { HeaderNav } from "@/app/components/SubComponents/HeaderNav";
+import { getCategoryKeys } from "@/app/requests/inventory";
+
 import React, { useEffect, useState } from "react";
-import { getCategoryKeys } from "../requests/inventory";
 import Link from "next/link";
 
 interface DashboardHeaderProps {
