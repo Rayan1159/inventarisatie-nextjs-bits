@@ -1,16 +1,18 @@
 "use client";
 
-import { DashboardHeader } from "../../components/DashboardHeader";
-import { Box, Typography, TextField, Button, Stack, Grid } from "@mui/material";
-import { getCategoryKeys, setNewCategory } from "../../requests/inventory";
-import { getInventoryItems } from "../../fn/category";
-import { AgGridReact } from "ag-grid-react";
 import React from "react";
 import Modal from '@mui/material/Modal';
-import "ag-grid-community/styles/ag-grid.css";
+import { AgGridReact } from "ag-grid-react";
+import { Box, Typography, TextField, Button, Stack, Grid } from "@mui/material";
+import { DashboardHeader } from "@/app/components/DashboardHeader";
+import { getCategoryKeys, setNewCategory } from "@/app/requests/inventory";
+import { getInventoryItems } from "@/app/fn/category";
+import { getUserStoreData } from "@/app/storage/storage";
+import '@/app/css/global.css';
+import "@/app/css/Dashboard.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import '../../css/global.css';
-import "../../css/Dashboard.css";
+import "ag-grid-community/styles/ag-grid.css";
+import { redirect } from "next/navigation";
 
 export default function Dashboard() {
   const [category, setCategory] = React.useState('');
@@ -148,6 +150,11 @@ export default function Dashboard() {
     handleClose('modalOne')();
   };
 
+  const isLoggedIn = () => {
+    const user = getUserStoreData();
+    return user.username != null;
+  }
+
   React.useEffect(() => {
       Promise.all([
         getCategoryKeys(), 
@@ -172,6 +179,10 @@ export default function Dashboard() {
         console.error(err);
       });
       document.title = "Inventarisatie - Dashboard";
+
+      if (!isLoggedIn()) {
+        redirect('/');
+      }
   }, []);
 
   return (
