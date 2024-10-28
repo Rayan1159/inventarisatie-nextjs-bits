@@ -1,12 +1,8 @@
-import { application, urlencoded } from "express";
-import { Login } from "../src/layout/Login";
+import { application, urlencoded, json } from "express";
 import sequelize from "./database/sequelize";
-import path from "path";
 import cors from "cors";
-import * as fs from "fs";
-import React from "react";
 import "react-dom/server";
-//init express
+
 const app = application;
 
 sequelize
@@ -14,15 +10,15 @@ sequelize
   .then(() => {
     console.log("Database synchroniseren");
   })
-  .catch((err) => {
+  .catch((err: unknown) => {
     console.error(err);
   })
   .finally(() => {
     console.log("Database gesynchroniseerd");
   });
 
-app.use(qpp.json());
-app.use(app.urlencoded({ extended: false }));
+app.use(json());
+app.use(urlencoded({ extended: false }));
 
 app.use(cors());
 
