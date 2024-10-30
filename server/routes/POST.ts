@@ -6,11 +6,11 @@ import { permissionLevel } from '../enums/permissions'
 import {Request, Response, NextFunction} from "express";
 import { InventoryAttr } from "../database/models/Inventory";
 
-const router = Router();
+const routerPost = Router();
 User.initModel(sequelize)
 Inventory.initModel(sequelize);
 
-router.post('/user/login', async (req: Request, res: Response, next: NextFunction) => {
+routerPost.post('/user/login', async (req: Request, res: Response, next: NextFunction) => {
     const {username, password} = req.body;  
     if (!username || !password) return res.status(400).json({
         error: 'Username and password are required'
@@ -34,7 +34,7 @@ router.post('/user/login', async (req: Request, res: Response, next: NextFunctio
     }
 })
 
-router.post('/user/exists', async (req: Request, res: Response, next: NextFunction) => {
+routerPost.post('/user/exists', async (req: Request, res: Response, next: NextFunction) => {
     const {username} = req.body;
     const exists = await User.findUser(username);
 
@@ -44,7 +44,7 @@ router.post('/user/exists', async (req: Request, res: Response, next: NextFuncti
 })
 
 
-router.post('/entry/create', async (req, res, _next) => {
+routerPost.post('/entry/create', async (req, res, _next) => {
     const permissionInt = await User.getPermissionLevel(req.body.username) as number;
     if (!permissionInt) {
         return res.status(500).json({
@@ -67,4 +67,4 @@ router.post('/entry/create', async (req, res, _next) => {
     }
 })
 
-export default router;
+export default routerPost;

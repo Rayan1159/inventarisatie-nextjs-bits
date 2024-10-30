@@ -4,19 +4,18 @@ import { Inventory } from "../database/models/Inventory";
 import sequelize from "../database/sequelize";
 import * as fs from "fs";
 import * as path from "path";
-import { getCategories } from '../../src/fn/category';
 import Category from "../database/models/Category";
 
 Inventory.initModel(sequelize);
 Category.initModel(sequelize);
 
-const router = Router();
+const routerGet = Router();
 
 const BASE_DIR = __dirname;
 const CATEGORY_JSON = path.join(BASE_DIR, "../data", "categories.json");
 const CATEGORY_DATA = JSON.parse(fs.readFileSync(CATEGORY_JSON, "utf-8"));
 
-router.get(
+routerGet.get(
   "/inventory",
   async (req: Request, res: Response, _next: NextFunction) => {
     const entries = await Inventory.getEntries();
@@ -24,26 +23,26 @@ router.get(
   },
 );
 
-router.get(
+routerGet.get(
   "/inventory/categories",
   async (req, res, next) => {
   res.send(CATEGORY_DATA);
 });
 
-router.get(
+routerGet.get(
   "/inventory/categories/keys",
   async (req, res, next) => {
     const categories = await Category.getCategories();
     if (categories) res.json(categories)
 });
 
-router.get(
+routerGet.get(
   "/inventory/categories/all",
   async (req, res, next) => {
-    res.send(await getCategories())
+    res.send(await Category.getCategories())
   }
 )
-router.post(
+routerGet.post(
   "/inventory/categories/update", 
   async (req, res, next) => {
 
@@ -55,4 +54,4 @@ router.post(
 });
 
 
-export default router;
+export default routerGet;
