@@ -26,8 +26,8 @@ app.use(urlencoded({ extended: false }));
 
 app.use(cors());
 
-app.use("/backend");
-app.use("/database");
+// app.use("/backend");
+// app.use("/database");
 
 const LISTENING_PORT = 8000;
 

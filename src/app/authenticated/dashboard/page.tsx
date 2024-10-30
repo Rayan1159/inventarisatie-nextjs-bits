@@ -3,7 +3,7 @@
 import React from "react";
 import Modal from '@mui/material/Modal';
 import { AgGridReact } from "ag-grid-react";
-import { Box, Typography, TextField, Button, Stack, Grid } from "@mui/material";
+import { Box, Typography, TextField, Button, Stack, Grid2 as Grid } from "@mui/material";
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { getCategoryKeys, setNewCategory } from "@/app/requests/inventory";
 import { getInventoryItems } from "@/app/fn/category";
