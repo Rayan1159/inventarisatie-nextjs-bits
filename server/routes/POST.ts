@@ -1,9 +1,8 @@
+import sequelize from "../database/sequelize";
 import { Router }  from "express";
 import { User } from "../database/models/User";
 import { Inventory } from "../database/models/Inventory";
-import sequelize from "../database/sequelize";
 import { permissionLevel } from '../enums/permissions'
-import {Request, Response, NextFunction} from "express";
 import { InventoryAttr } from "../database/models/Inventory";
 
 const routerPost = Router();

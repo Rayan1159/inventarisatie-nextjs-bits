@@ -7,7 +7,7 @@ import { Box, Typography, TextField, Button, Stack, Grid2 as Grid } from "@mui/m
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { getCategoryKeys, setNewCategory } from "@/app/requests/inventory";
 import { getInventoryItems } from "@/app/fn/category";
-import { getUserStoreData } from "@/app/storage/storage";
+import { getUserStoreData, hasPermission } from "@/app/storage/storage";
 import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
@@ -102,6 +102,11 @@ export default function Dashboard() {
   }
 
   const addNewCategory = (_event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!hasPermission()) {
+      alert('Je hebt geen permissie om een categorie toe te voegen');
+      return;
+    }
+
     if (category) {
       setNewCategory(category);
     } else {
@@ -192,11 +197,11 @@ export default function Dashboard() {
       </header>
       <div className="dashboard-container">
       <Modal
-      open={open.modalOne.isActive}
-      onClose={handleClose('modalOne')}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description">
-      <Box component="form" sx={inventoryInterfaceStyle} onSubmit={handleInventorySubmit}>
+        open={open.modalOne.isActive}
+        onClose={handleClose('modalOne')}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description">
+        <Box component="form" sx={inventoryInterfaceStyle} onSubmit={handleInventorySubmit}>
         <Typography id="modal-modal-title" variant="h6" component="h2" gutterBottom>
           New Inventory Entry
         </Typography>
