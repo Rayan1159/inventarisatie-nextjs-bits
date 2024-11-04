@@ -8,11 +8,11 @@ import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { getCategoryKeys, setNewCategory } from "@/app/requests/inventory";
 import { getInventoryItems } from "@/app/fn/category";
 import { getUserStoreData, hasPermission } from "@/app/storage/storage";
+import { redirect } from "next/navigation";
 import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-community/styles/ag-grid.css";
-import { redirect } from "next/navigation";
 
 export default function Dashboard() {
   const [category, setCategory] = React.useState('');
@@ -160,6 +160,10 @@ export default function Dashboard() {
     return user.username != null;
   }
 
+  const isPermitted = () => {
+    return hasPermission();
+  }
+
   React.useEffect(() => {
       Promise.all([
         getCategoryKeys(), 
@@ -254,10 +258,12 @@ export default function Dashboard() {
           </Box>
         </Modal>
         <div className="ag-theme-quartz" style={{ height: 750, width: 1400 }}>
-          <div className="inventory-button-group">
-            <button className="open-interface" onClick={handleOpen('modalOne')}>New inventory entry</button>
-            <button className="open-new-category" onClick={handleOpen('modalTwo')}>New category</button>
-          </div>
+          {isPermitted() ? 
+           <div className="inventory-button-group">
+              <button className="open-interface" onClick={handleOpen('modalOne')}>New inventory entry</button>
+              <button className="open-new-category" onClick={handleOpen('modalTwo')}>New category</button>
+            </div> : null
+          }
           <AgGridReact
             rowData={rowData}
             columnDefs={colDefs as any}

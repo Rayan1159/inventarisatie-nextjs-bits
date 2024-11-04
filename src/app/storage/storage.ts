@@ -18,7 +18,6 @@ export function returnStore(storeName: string): any {
 export function hasUUID(): boolean {
   const data = returnStore("user");
   return data.uuid;
-
 }
 
 export function getUserStoreData(): UserData {
@@ -32,6 +31,6 @@ export function getUserPermissions(): number | boolean {
 }
 
 export function hasPermission(): boolean {
-  const permissionLevel = getUserPermissions();
-  return permissionLevel === 1 ? true : false;
+  const permission = getUserPermissions();
+  return permission === permissionLevel.ADMIN ? true : false;
 }
