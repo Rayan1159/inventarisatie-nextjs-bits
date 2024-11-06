@@ -106,7 +106,7 @@ export default function Dashboard() {
     setCategory(event.target.value);
   }
 
-  const addNewCategory = (_event: React.MouseEvent<HTMLButtonElement>) => {
+  const addNewCategory = () => {
     if (!hasPermission()) {
       alert('Je hebt geen permissie om een categorie toe te voegen');
       return;
@@ -174,14 +174,16 @@ export default function Dashboard() {
         getCategoryKeys(), 
         getInventoryItems()
       ]).then((data) => {
-        const columnDefs = data[0].map((field: any) => {
+        const columnDefs = data[0].map((field: {field: string}) => {
           return {
             field: field.field,
           }
         });
         setColDefs(columnDefs);
 
-        let rowData = data[1].map((row: any) => {
+        const rowData: string[] = data[1].map((row: {
+          _id: number;
+        }) => {
           return {
             ...row,
             id: row._id,
@@ -212,11 +214,11 @@ export default function Dashboard() {
         aria-describedby="modal-modal-description">
         <Box component="form" sx={inventoryInterfaceStyle} onSubmit={handleInventorySubmit}>
         <Typography id="modal-modal-title" variant="h6" component="h2" gutterBottom>
-          New Inventory Entry
+          New Inventory Entry for category {category}
         </Typography>
         <Grid container spacing={2}>
           {inputFields.map((field, index) => (
-            <Grid item xs={12} sm={6} key={index}>
+            <Grid key={index}>
               <TextField
                 fullWidth
                 label={field.placeholder}
@@ -266,7 +268,7 @@ export default function Dashboard() {
           {isPermitted() ? 
            <div className="inventory-button-group">
               <button className="open-interface" onClick={handleOpen('modalOne')}>New inventory entry</button>
-              <button className="open-new-category" onClick={handleOpen('modalTwo')}>New category {category}</button>
+              <button className="open-new-category" onClick={handleOpen('modalTwo')}>New category</button>
             </div> : null
           }
           <AgGridReact

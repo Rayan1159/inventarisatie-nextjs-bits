@@ -47,7 +47,6 @@ export function AuthCard() {
       alert('je bent ingelogd als gast');
       redirect('/authenticated/dashboard');
     }
-
     alert('Gebruikersnaam of wachtwoord is onjuist');
   };
 

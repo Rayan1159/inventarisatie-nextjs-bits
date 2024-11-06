@@ -15,7 +15,6 @@ interface DashboardHeaderProps {
 export function DashboardHeader({ headerNavClassname, parentCallback }: DashboardHeaderProps) {
   const [selectValue, setSelectValue] = useState("");
   const [selectItems, setSelectItems] = useState<React.ReactNode[]>([]);
-  const categoryChildRef = React.useRef(null);
 
   const selectMenuStyle = {
     backgroundColor: "transparent",
@@ -30,7 +29,6 @@ export function DashboardHeader({ headerNavClassname, parentCallback }: Dashboar
       parentCallback(event.target.value);
       return;
     }
-    console.log('parentcallback is null')
   }
 
   useEffect(() => {
