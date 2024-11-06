@@ -26,6 +26,7 @@ export function DashboardHeader({ headerNavClassname, parentCallback }: Dashboar
 
   const categoryChangeTrigger = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (parentCallback) {
+      if (event.target.value === "Select category") return;
       parentCallback(event.target.value);
       return;
     }
