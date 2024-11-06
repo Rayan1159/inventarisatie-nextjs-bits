@@ -1,3 +1,5 @@
+"use client";
+
 import { permissionLevel } from '../../../server/enums/permissions';
 
 interface UserData {
@@ -6,11 +8,17 @@ interface UserData {
   uuid: string;
 }
 
+const isWindowDefined = (): boolean => {
+  return typeof window === "undefined";
+}
+
 export function setUserStoreData(user: UserData) {
+  if (isWindowDefined()) return;
   localStorage.setItem("user", JSON.stringify(user));
 }
 
 export function returnStore(storeName: string): any {
+  if (isWindowDefined()) return;
   const item = localStorage.getItem(storeName);
   if (!item) return false;
   return JSON.parse(item);
