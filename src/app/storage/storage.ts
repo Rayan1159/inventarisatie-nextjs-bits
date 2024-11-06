@@ -1,4 +1,5 @@
 import { permissionLevel } from '../../../server/enums/permissions';
+
 interface UserData {
   username: string;
   permissionLevel: number;
@@ -31,6 +32,6 @@ export function getUserPermissions(): number | boolean {
 }
 
 export function hasPermission(): boolean {
-  const permission = getUserPermissions();
+  const permission: number = getUserPermissions() as number;
   return permission === permissionLevel.ADMIN ? true : false;
 }

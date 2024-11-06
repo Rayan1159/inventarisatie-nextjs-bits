@@ -62,6 +62,11 @@ export default function Dashboard() {
     }
   });
 
+  const handleCallback = (childData: string) => {
+    setCategory(childData);
+    console.log('data from child', childData);
+  }
+
   const handleOpen = (modal: string) => () => setOpen({
     ...open,
     [modal]: {
@@ -197,7 +202,7 @@ export default function Dashboard() {
   return (
     <div className="container">
       <header className="global-header-wrapper">
-        <DashboardHeader headerNavClassname="global-header" categoryState={category} setCategoryState={setCategory}/>
+        <DashboardHeader headerNavClassname="global-header" categoryState={category} parentCallback={handleCallback}/>
       </header>
       <div className="dashboard-container">
       <Modal
@@ -261,7 +266,7 @@ export default function Dashboard() {
           {isPermitted() ? 
            <div className="inventory-button-group">
               <button className="open-interface" onClick={handleOpen('modalOne')}>New inventory entry</button>
-              <button className="open-new-category" onClick={handleOpen('modalTwo')}>New category</button>
+              <button className="open-new-category" onClick={handleOpen('modalTwo')}>New category {category}</button>
             </div> : null
           }
           <AgGridReact

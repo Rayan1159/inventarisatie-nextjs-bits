@@ -9,12 +9,13 @@ import Link from "next/link";
 interface DashboardHeaderProps {
   headerNavClassname?: string;
   categoryState: string;
-  setCategoryState: (category: string) => void;
+  parentCallback?: (childData: string) => void;
 }
 
-export function DashboardHeader({ headerNavClassname }: DashboardHeaderProps) {
+export function DashboardHeader({ headerNavClassname, parentCallback }: DashboardHeaderProps) {
   const [selectValue, setSelectValue] = useState("");
   const [selectItems, setSelectItems] = useState<React.ReactNode[]>([]);
+  const categoryChildRef = React.useRef(null);
 
   const selectMenuStyle = {
     backgroundColor: "transparent",
@@ -22,6 +23,14 @@ export function DashboardHeader({ headerNavClassname }: DashboardHeaderProps) {
     padding: "5px",
     borderRadius: "5px",
     color: "white",
+  }
+
+  const categoryChangeTrigger = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (parentCallback) {
+      parentCallback(event.target.value);
+      return;
+    }
+    console.log('parentcallback is null')
   }
 
   useEffect(() => {
@@ -47,7 +56,10 @@ export function DashboardHeader({ headerNavClassname }: DashboardHeaderProps) {
           <li> 
             <select 
               style={selectMenuStyle} 
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectValue(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                setSelectValue(e.target.value)
+                categoryChangeTrigger(e)
+              }}
              >
               <option>Select category</option> 
               {selectItems}
