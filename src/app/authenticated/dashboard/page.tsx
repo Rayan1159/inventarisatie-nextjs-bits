@@ -1,21 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { RefObject } from "react";
 import Modal from '@mui/material/Modal';
 import { AgGridReact } from "ag-grid-react";
 import { Box, Typography, TextField, Button, Stack, Grid2 as Grid } from "@mui/material";
 import { DashboardHeader } from "@/app/components/DashboardHeader";
-import { getCategoryKeys, setNewCategory } from "@/app/requests/inventory";
+import { categoryExists, getCategoryKeys, setNewCategory } from "@/app/requests/inventory";
 import { getInventoryItems } from "@/app/fn/category";
-import { getUserStoreData, hasPermission } from "@/app/storage/storage";
 import { redirect } from "next/navigation";
 import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-community/styles/ag-grid.css";
 
+interface UserData {
+  username: string;
+  permissionLevel: number;
+  uuid: string;
+}
+
 export default function Dashboard() {
   const [category, setCategory] = React.useState('');
+  const gridRef = React.useRef<AgGridReact>(null);
 
   const inventoryInterfaceStyle = {
     display: 'flex',
@@ -62,9 +68,18 @@ export default function Dashboard() {
     }
   });
 
-  const handleCallback = (childData: string) => {
-    setCategory(childData);
-    console.log('data from child', childData);
+  const reloadGrid = async (category: string) => {
+    const data = await categoryExists(category);
+    const response = await data.json();
+    if (response.status === 200) {
+      const keys = await data.keys();
+      setDynamicInventoryForm(keys);
+      console.log(dynamicInvetoryForm, data.keys);
+    }
+  }
+
+  const handleCallback = (childData: any) => {
+    reloadGrid(childData);
   }
 
   const handleOpen = (modal: string) => () => setOpen({
@@ -133,6 +148,8 @@ export default function Dashboard() {
     requiredAction: ''
   });
 
+  const [dynamicInvetoryForm, setDynamicInventoryForm] = React.useState<string[]>();
+
   const handleInventoryInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setInventoryForm({
@@ -157,22 +174,38 @@ export default function Dashboard() {
       recentActions: '',
       requiredAction: ''
     });
+
     handleClose('modalOne')();
   };
 
   const isLoggedIn = () => {
-    const user = getUserStoreData();
-    return user.username != null;
+    if (typeof window !== "undefined") alert('window undefined in dashboard')
+    return window.localStorage.getItem("user") !== null;
   }
 
-  const isPermitted = () => {
-    return hasPermission();
+  const hasPermission = () => {
+    if (isLoggedIn() && typeof window !== "undefined") {
+      const user = JSON.parse(window.localStorage.getItem("user")!);
+      return user.permissionLevel >= 1;
+    }
+    return false;
   }
+
 
   React.useEffect(() => {
+      const isLoggedIn = () => {
+        if (typeof window !== "undefined") {
+          const user = JSON.parse(window.localStorage.getItem("user")!);
+          if(user === null){
+            redirect('/login');
+          }
+        }
+        return false;
+      }
+
       Promise.all([
         getCategoryKeys(), 
-        getInventoryItems()
+        getInventoryItems(),
       ]).then((data) => {
         const columnDefs = data[0].map((field: {field: string}) => {
           return {
@@ -196,9 +229,7 @@ export default function Dashboard() {
       });
       document.title = "Inventarisatie - Dashboard";
 
-      if (!isLoggedIn()) {
-        redirect('/');
-      }
+      isLoggedIn();
   }, []);
 
   return (
@@ -216,7 +247,7 @@ export default function Dashboard() {
         <Typography id="modal-modal-title" variant="h6" component="h2" gutterBottom>
           New Inventory Entry for category {category}
         </Typography>
-        <Grid container spacing={2}>
+        <Grid  container spacing={2}>
           {inputFields.map((field, index) => (
             <Grid key={index}>
               <TextField
@@ -265,7 +296,7 @@ export default function Dashboard() {
           </Box>
         </Modal>
         <div className="ag-theme-quartz" style={{ height: 750, width: 1400 }}>
-          {isPermitted() ? 
+          {hasPermission() ? 
            <div className="inventory-button-group">
               <button className="open-interface" onClick={handleOpen('modalOne')}>New inventory entry</button>
               <button className="open-new-category" onClick={handleOpen('modalTwo')}>New category</button>

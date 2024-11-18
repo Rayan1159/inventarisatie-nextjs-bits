@@ -36,3 +36,28 @@ export const deleteCategory = async (category: string) => {
     });
     return response.json();
 }
+
+export const categoryExists = async (category: string): Promise<{
+      json: () => Promise<{
+        status: number;
+      }>;
+      keys: () => Promise<string[]>;
+    }> => {
+    const response = await fetch(`${baseurl}/database/inventory/categories/exists`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ category })
+    });
+    return {
+        json: () => response.json(),
+        keys: async () => {
+            if (response.status === 200) {
+                return await getCategoryKeys();
+            } else {
+                return [];
+            }
+        }
+    } 
+}

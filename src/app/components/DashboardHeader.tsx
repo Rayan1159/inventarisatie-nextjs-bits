@@ -9,7 +9,7 @@ import Link from "next/link";
 interface DashboardHeaderProps {
   headerNavClassname?: string;
   categoryState: string;
-  parentCallback?: (childData: string) => void;
+  parentCallback: (childData: string) => void;
 }
 
 export function DashboardHeader({ headerNavClassname, parentCallback }: DashboardHeaderProps) {
@@ -25,11 +25,9 @@ export function DashboardHeader({ headerNavClassname, parentCallback }: Dashboar
   }
 
   const categoryChangeTrigger = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (parentCallback) {
-      if (event.target.value === "Select category") return;
-      parentCallback(event.target.value);
-      return;
-    }
+    if (event.target.value === "Select category") return;
+    parentCallback(event.target.value);
+    return;
   }
 
   useEffect(() => {

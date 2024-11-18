@@ -3,7 +3,6 @@
 import React from "react";
 import { redirect } from "next/navigation";
 
-import { setUserStoreData } from "@/app/storage/storage";
 
 export function AuthCard() {
   const [userData, setUserData] = React.useState<{
@@ -29,21 +28,27 @@ export function AuthCard() {
     }
     
     if (username === "admin" && password === "admin") {
-      setUserStoreData({
-        username: username,
+      const user = {
+        username: "admin",
         permissionLevel: 1,
         uuid: "admin",
-      });
+      }
+
+      window.localStorage.setItem("user", JSON.stringify(user));
+
       alert('je bent ingelogd als admin');
       redirect('/authenticated/dashboard');
     }
 
     if (username === "guest" && password === "guest") {
-      setUserStoreData({
-        username: username,
+      const user = {
+        username: "guest",
         permissionLevel: 0,
         uuid: "guest",
-      });
+      }
+
+      window.localStorage.setItem("user", JSON.stringify(user));
+
       alert('je bent ingelogd als gast');
       redirect('/authenticated/dashboard');
     }
