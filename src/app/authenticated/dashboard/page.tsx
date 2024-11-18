@@ -186,14 +186,16 @@ export default function Dashboard() {
 
 
   React.useEffect(() => {
+      const storageExists = () => {
+        return localStorage.getItem("user") !== null;
+      }
+
       const isLoggedIn = () => {
-        if (typeof window !== "undefined") {
-          const user = JSON.parse(localStorage.getItem("user")!);
-          if(user === null){
-            redirect('/login');
-          }
+        if (!storageExists()) return;
+        const user = JSON.parse(localStorage.getItem("user")!);
+        if(user === null){
+          redirect('/login');
         }
-        return false;
       }
 
       const setPermission = () => {

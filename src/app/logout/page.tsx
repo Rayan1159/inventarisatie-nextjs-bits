@@ -9,7 +9,8 @@ import { redirect } from "next/navigation";
 export default function logout() {
     useEffect(() => {
         const isLoggedIn = () => {
-            const user = getUserStoreData();
+            const user = JSON.parse(localStorage.getItem("user")!);
+            if (!user) redirect('/');
             return user.username != null;
         }
 
