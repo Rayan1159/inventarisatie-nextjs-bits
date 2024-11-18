@@ -12,6 +12,7 @@ import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-community/styles/ag-grid.css";
+import { permissionLevel } from '../../../../server/enums/permissions';
 
 interface UserData {
   username: string;
@@ -22,6 +23,7 @@ interface UserData {
 export default function Dashboard() {
   const [category, setCategory] = React.useState('');
   const gridRef = React.useRef<AgGridReact>(null);
+  const [permissionLevel, setPermissionLevel] = React.useState(0);
 
   const inventoryInterfaceStyle = {
     display: 'flex',
@@ -178,29 +180,25 @@ export default function Dashboard() {
     handleClose('modalOne')();
   };
 
-  const isLoggedIn = () => {
-    if (typeof window !== "undefined") alert('window undefined in dashboard')
-    return window.localStorage.getItem("user") !== null;
-  }
-
   const hasPermission = () => {
-    if (isLoggedIn() && typeof window !== "undefined") {
-      const user = JSON.parse(window.localStorage.getItem("user")!);
-      return user.permissionLevel >= 1;
-    }
-    return false;
+    return permissionLevel >= 1;
   }
 
 
   React.useEffect(() => {
       const isLoggedIn = () => {
         if (typeof window !== "undefined") {
-          const user = JSON.parse(window.localStorage.getItem("user")!);
+          const user = JSON.parse(localStorage.getItem("user")!);
           if(user === null){
             redirect('/login');
           }
         }
         return false;
+      }
+
+      const setPermission = () => {
+        const user = JSON.parse(localStorage.getItem("user")!);
+        setPermissionLevel(user.permissionLevel);
       }
 
       Promise.all([
@@ -229,6 +227,7 @@ export default function Dashboard() {
       });
       document.title = "Inventarisatie - Dashboard";
 
+      setPermission();
       isLoggedIn();
   }, []);
 
@@ -247,7 +246,7 @@ export default function Dashboard() {
         <Typography id="modal-modal-title" variant="h6" component="h2" gutterBottom>
           New Inventory Entry for category {category}
         </Typography>
-        <Grid  container spacing={2}>
+        <Grid container spacing={2}>
           {inputFields.map((field, index) => (
             <Grid key={index}>
               <TextField
