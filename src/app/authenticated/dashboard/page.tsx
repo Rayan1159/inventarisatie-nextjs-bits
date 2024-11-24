@@ -12,16 +12,14 @@ import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-community/styles/ag-grid.css";
-import { isArray, isSymbol } from "util";
+import { preload } from "react-dom";
 import { warn } from "console";
-
-
 
 export default function Dashboard() {
   const [category, setCategory] = React.useState('');
   const [permissionLevel, setPermissionLevel] = React.useState(0);
-
-  const [dynamicInvetoryForm, setDynamicInventoryForm] = React.useState<string[]>([])
+  const [preLoadedRowData, preLoadRowData] = React.useState<Record<string, any>>([])
+  const [dynamicRowData, setDynamicRowData] = React.useState<Record<string, any>>({})
 
   const inventoryInterfaceStyle = {
     display: 'flex',
@@ -73,20 +71,19 @@ export default function Dashboard() {
     const response = await data.json();
     if (response.exists === true) {
       const keys = await data.keys();
-      console.log(keys);
       keys.forEach((value, key) => {
-          dynamicInvetoryForm.push(value.name);
+        preLoadRowData({
+            ...value
+        })
       })
-      console.log(dynamicInvetoryForm);
     }
 
     let output: Record<string, any> = {};
-    Object.entries(dynamicInvetoryForm).forEach(([key, value]) => {
-        console.log(key, value)
+    Object.entries(preLoadedRowData).forEach(([key, value]) => {
         output[value] = value;
     })
 
-    console.log(output);
+    console.log(preLoadedRowData);
   }
 
   const handleCallback = (childData: any) => {
