@@ -18,8 +18,9 @@ import { warn } from "console";
 export default function Dashboard() {
   const [category, setCategory] = React.useState('');
   const [permissionLevel, setPermissionLevel] = React.useState(0);
-  const [preLoadedRowData, preLoadRowData] = React.useState<Record<string, any>>([])
-  const [dynamicRowData, setDynamicRowData] = React.useState<Record<string, any>>({})
+
+  const [preLoadedRowData] = React.useState<Record<string, any>>([])
+  const [dynamicRowData] = React.useState<Record<string, any>>({})
 
   const inventoryInterfaceStyle = {
     display: 'flex',
@@ -78,14 +79,10 @@ export default function Dashboard() {
 
     let output: Record<string, any> = {};
     Object.entries(preLoadedRowData).forEach(([key, value]) => {
-        output[value] = value;
-    })
+        dynamicRowData[value] = value;
+    });
 
-    console.log('fixed output', output, 'preloadedrowdata', preLoadedRowData)
-
-    dynamicRowData[0] = output;
-
-
+    console.log('fixed output', output, 'preloadedrowdata', preLoadedRowData);
     console.log(dynamicRowData);
   }
 
