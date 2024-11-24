@@ -12,7 +12,8 @@ import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-community/styles/ag-grid.css";
-import { isSymbol } from "util";
+import { isArray, isSymbol } from "util";
+import { warn } from "console";
 
 
 
@@ -78,6 +79,14 @@ export default function Dashboard() {
       })
       console.log(dynamicInvetoryForm);
     }
+
+    let output: Record<string, any> = {};
+    Object.entries(dynamicInvetoryForm).forEach(([key, value]) => {
+        console.log(key, value)
+        output[value] = value;
+    })
+
+    console.log(output);
   }
 
   const handleCallback = (childData: any) => {
