@@ -1,3 +1,5 @@
+import { get } from "https";
+
 let baseurl: string;
 const env: string = "dev";
 
@@ -41,7 +43,10 @@ export const categoryExists = async (category: string): Promise<{
       json: () => Promise<{
         exists: boolean;
       }>;
-      keys: () => Promise<string[]>;
+      keys: () => Promise<[{
+        id: number,
+        name: string
+      }]>;
     }> => {
     const response = await fetch(`${baseurl}/database/inventory/categories/exists`, {
         method: 'POST',
@@ -52,12 +57,6 @@ export const categoryExists = async (category: string): Promise<{
     });
     return {
         json: () => response.json(),
-        keys: async () => {
-            if (response.status === 200) {
-                return await getCategoryKeys();
-            } else {
-                return [];
-            }
-        }
+        keys: () => getCategoryKeys()
     } 
 }

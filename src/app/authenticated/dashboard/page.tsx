@@ -72,8 +72,11 @@ export default function Dashboard() {
     const response = await data.json();
     if (response.exists === true) {
       const keys = await data.keys();
-      setDynamicInventoryForm(keys);
-      console.log(dynamicInvetoryForm, data.keys);
+      console.log(keys);
+      keys.forEach((value, key) => {
+          dynamicInvetoryForm.push(value.name);
+      })
+      console.log(dynamicInvetoryForm);
     }
   }
 
