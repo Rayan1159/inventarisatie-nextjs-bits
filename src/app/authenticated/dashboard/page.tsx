@@ -12,7 +12,7 @@ import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-community/styles/ag-grid.css";
-import { preload } from "react-dom";
+import { preload, preloadModule } from "react-dom";
 import { warn } from "console";
 
 export default function Dashboard() {
@@ -72,10 +72,8 @@ export default function Dashboard() {
     if (response.exists === true) {
       const keys = await data.keys();
       keys.forEach((value, key) => {
-        preLoadRowData({
-            ...value
-        })
-      })
+          preLoadedRowData.push(value.name)
+      });
     }
 
     let output: Record<string, any> = {};
@@ -83,7 +81,12 @@ export default function Dashboard() {
         output[value] = value;
     })
 
-    console.log(preLoadedRowData);
+    console.log('fixed output', output, 'preloadedrowdata', preLoadedRowData)
+
+    dynamicRowData[0] = output;
+
+
+    console.log(dynamicRowData);
   }
 
   const handleCallback = (childData: any) => {
