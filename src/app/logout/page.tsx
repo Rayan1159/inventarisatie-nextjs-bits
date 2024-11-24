@@ -13,15 +13,8 @@ export default function logout() {
             if (!user) redirect('/');
             return user.username != null;
         }
-
-        if (!isLoggedIn()) {
-            alert("Je bent niet ingelogd");
-            redirect('/');   
-        }
-
+        if (!isLoggedIn()) redirect('/');   
         localStorage.removeItem("user");
-        alert("Je bent uitgelogd");
         redirect('/');
     });
-    return null;
 }

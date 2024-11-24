@@ -1,6 +1,6 @@
 "use client";
 
-import React, { RefObject } from "react";
+import React from "react";
 import Modal from '@mui/material/Modal';
 import { AgGridReact } from "ag-grid-react";
 import { Box, Typography, TextField, Button, Stack, Grid2 as Grid } from "@mui/material";
@@ -12,18 +12,15 @@ import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-community/styles/ag-grid.css";
-import { permissionLevel } from '../../../../server/enums/permissions';
+import { isSymbol } from "util";
 
-interface UserData {
-  username: string;
-  permissionLevel: number;
-  uuid: string;
-}
+
 
 export default function Dashboard() {
   const [category, setCategory] = React.useState('');
-  const gridRef = React.useRef<AgGridReact>(null);
   const [permissionLevel, setPermissionLevel] = React.useState(0);
+
+  const [dynamicInvetoryForm, setDynamicInventoryForm] = React.useState<string[]>([])
 
   const inventoryInterfaceStyle = {
     display: 'flex',
@@ -73,7 +70,7 @@ export default function Dashboard() {
   const reloadGrid = async (category: string) => {
     const data = await categoryExists(category);
     const response = await data.json();
-    if (response.status === 200) {
+    if (response.exists === true) {
       const keys = await data.keys();
       setDynamicInventoryForm(keys);
       console.log(dynamicInvetoryForm, data.keys);
@@ -120,6 +117,7 @@ export default function Dashboard() {
   ];
 
   const categoryOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target == null) return;
     setCategory(event.target.value);
   }
 
@@ -149,8 +147,6 @@ export default function Dashboard() {
     recentActions: '',
     requiredAction: ''
   });
-
-  const [dynamicInvetoryForm, setDynamicInventoryForm] = React.useState<string[]>();
 
   const handleInventoryInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -184,7 +180,6 @@ export default function Dashboard() {
     return permissionLevel >= 1;
   }
 
-
   React.useEffect(() => {
       const storageExists = () => {
         return localStorage.getItem("user") !== null;
@@ -200,6 +195,7 @@ export default function Dashboard() {
 
       const setPermission = () => {
         const user = JSON.parse(localStorage.getItem("user")!);
+        if (!storageExists()) return;
         setPermissionLevel(user.permissionLevel);
       }
 
@@ -303,14 +299,16 @@ export default function Dashboard() {
               <button className="open-new-category" onClick={handleOpen('modalTwo')}>New category</button>
             </div> : null
           }
-          <AgGridReact
-            rowData={rowData}
-            columnDefs={colDefs as any}
-            defaultColDef={defaultColDef}
-            pagination={true}
-            paginationPageSize={15}
-            fullWidthCellRenderer={3}
-          />
+          <div className="grid-res">
+            <AgGridReact
+              rowData={rowData}
+              columnDefs={colDefs as any}
+              defaultColDef={defaultColDef}
+              pagination={true}
+              paginationPageSize={15}
+              fullWidthCellRenderer={3}
+            />
+          </div>
         </div>
       </div>
     </div>

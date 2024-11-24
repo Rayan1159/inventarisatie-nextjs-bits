@@ -46,18 +46,18 @@ routerGet.get(
 routerGet.post(
   "/inventory/categories/exists",
   async (req, res, _next) => {
-    const categories = await Category.getCategories();
-    if (categories.includes(req.body.category)) {
-      console.log('category exists');
-      res.status(200).json({
-        status: 200,
-      });
-    } else {
-      console.log('category does not exist');
-      res.status(404).json({
-        status: 404,
-      });
-    }
+      const categories = await Category.getCategories()
+      const requestCategory = req.body.category;
+      const mapped = categories.map((key, _index) => {
+          if (key == null) return;
+          if (key.name == requestCategory) return true;
+          return false;
+      })
+      if (mapped) {
+          res.status(200).json({
+              exists: true
+          })
+      }
   }
 )
 

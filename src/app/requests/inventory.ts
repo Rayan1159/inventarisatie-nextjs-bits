@@ -39,7 +39,7 @@ export const deleteCategory = async (category: string) => {
 
 export const categoryExists = async (category: string): Promise<{
       json: () => Promise<{
-        status: number;
+        exists: boolean;
       }>;
       keys: () => Promise<string[]>;
     }> => {
@@ -48,7 +48,7 @@ export const categoryExists = async (category: string): Promise<{
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ category })
+        body: JSON.stringify({ category }),
     });
     return {
         json: () => response.json(),

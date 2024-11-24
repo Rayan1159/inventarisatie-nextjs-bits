@@ -125,12 +125,26 @@ input { margin-bottom: 2rem; }
     color: greenyellow;
 }
 
-
-
 .add-btn {
     cursor: pointer;
 }
 
-@media only screen and (max-width: 375px) {
-    /* TODO: Responsiveness for dashboard implementeren */
+.grid-res {
+    height: 75vh;
+}
+
+@media only screen and (max-width: 375px) {    
+    .container {
+        margin: 5px
+    }
+}
+
+@media only screen and (max-width: 667px) {
+    .container {
+        margin: 3px;
+    }
+
+    .grid-res {
+        padding-bottom: 5px;
+    }
 }
