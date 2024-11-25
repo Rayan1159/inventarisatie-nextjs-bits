@@ -44,7 +44,7 @@ export class Category extends Model<CategoryAttr, CategoryCreationAttr> {
     }
 
     static async getCategories() {
-        let categories: Category[] = await Category.findAll();
+        const categories: Category[] = await Category.findAll();
         return categories.map((category: Category) => {
             return {
                 id: category.id,
@@ -52,6 +52,15 @@ export class Category extends Model<CategoryAttr, CategoryCreationAttr> {
             }
         });
     }
+
+    static async getCategoryId(category: string) {
+        const categoryId: Category = await Category.findOne({
+            where: {
+                name: category
+                }
+            }) as Category;
+        return categoryId.id;
+    } 
 }
 
 export default Category;
