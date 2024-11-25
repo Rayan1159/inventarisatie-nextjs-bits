@@ -12,8 +12,6 @@ import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-community/styles/ag-grid.css";
-import { preload, preloadModule } from "react-dom";
-import { warn } from "console";
 
 export default function Dashboard() {
   const [category, setCategory] = React.useState('');
@@ -21,6 +19,8 @@ export default function Dashboard() {
 
   const [preLoadedRowData] = React.useState<Record<string, any>>([])
   const [dynamicRowData] = React.useState<Record<string, any>>({})
+  const [colDefs, setColDefs] = React.useState<Record<string, any>>([])
+  const [rowData, setRowData] = React.useState<any[]>()
 
   const inventoryInterfaceStyle = {
     display: 'flex',
@@ -78,11 +78,13 @@ export default function Dashboard() {
      
       Object.entries(preLoadedRowData).forEach(([key, value]) => {
           dynamicRowData[value] = value;
-          setColDefs(value);
+          console.log(value)
+          colDefs["field"] = value;
       })
-
-      console.log(colDefs, rowData)
     }
+    
+    console.log("defs", colDefs)
+    assignInputs(category);
   }
 
   const handleCallback = (childData: any) => {
@@ -103,11 +105,12 @@ export default function Dashboard() {
     }
   });
 
-  const [rowData, setRowData] = React.useState<any[]>([]);
-  const [colDefs, setColDefs] = React.useState("Select category");
-
   const defaultColDef = {
     flex: 1
+  }
+
+  const assignInputs = (category) => {
+      const placeholder = colDefs;
   }
 
   const inputFields = [
@@ -210,7 +213,7 @@ export default function Dashboard() {
       Promise.all([ 
         getInventoryItems(colDefs),
       ]).then((data) => {
-        if (data === null) return;
+        if (colDefs.c) return;
         const rowData: string[] = data[0].map((row: {
           _id: number;
         }) => {

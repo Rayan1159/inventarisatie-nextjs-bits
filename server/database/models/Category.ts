@@ -3,6 +3,7 @@ import {
     Model,
     Optional
 } from 'sequelize';
+import { CategoryItems } from './CategoryItems';
 
 export interface CategoryAttr {
     id?: number;
