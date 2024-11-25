@@ -1,4 +1,4 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 import Category from './Category';
 import { P } from 'pino';
 
@@ -23,6 +23,40 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
 
     category?: Category;
 
+    static initModel(sequelize: Sequelize) {
+        CategoryItems.init({
+            category_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'categories',
+                    key: 'id'
+                }
+            },
+            item_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'items',
+                    key: 'id'
+                }
+            },
+            item_name: {
+                type: DataTypes.STRING,
+                allowNull: false
+            }
+        }, {
+            sequelize,
+            modelName: 'category_items',
+        });
+
+        CategoryItems.belongsTo(Category, {
+            foreignKey: 'category_id',
+            as: 'category',
+            onDelete: 'CASCADE',
+        });
+    }
+
     static associate(models: any) {
         CategoryItems.belongsTo(models.Category, {
             foreignKey: 'category_id',
@@ -32,12 +66,12 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
     }
 
     static async getItemsAsKeys(category: {
-        id: number;
+        category_id: number;
     }) {
         const keyArray: string[] = []
         const items = await CategoryItems.findAll({
             where: {
-                id: category.id
+                category_id: category.category_id
             }
         })
         Object.keys(items).forEach(([value]) => {
