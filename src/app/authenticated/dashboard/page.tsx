@@ -75,15 +75,14 @@ export default function Dashboard() {
       keys.forEach((value, key) => {
           preLoadedRowData.push(value.name)
       });
+     
+      Object.entries(preLoadedRowData).forEach(([key, value]) => {
+          dynamicRowData[value] = value;
+          setColDefs(value);
+      })
+
+      console.log(colDefs, rowData)
     }
-
-    let output: Record<string, any> = {};
-    Object.entries(preLoadedRowData).forEach(([key, value]) => {
-        dynamicRowData[value] = value;
-    });
-
-    console.log('fixed output', output, 'preloadedrowdata', preLoadedRowData);
-    console.log(dynamicRowData);
   }
 
   const handleCallback = (childData: any) => {
@@ -105,7 +104,7 @@ export default function Dashboard() {
   });
 
   const [rowData, setRowData] = React.useState<any[]>([]);
-  const [colDefs, setColDefs] = React.useState(null);
+  const [colDefs, setColDefs] = React.useState("Select category");
 
   const defaultColDef = {
     flex: 1
@@ -192,7 +191,7 @@ export default function Dashboard() {
   React.useEffect(() => {
       const storageExists = () => {
         return localStorage.getItem("user") !== null;
-      }
+      } 
 
       const isLoggedIn = () => {
         if (!storageExists()) return;
@@ -208,18 +207,11 @@ export default function Dashboard() {
         setPermissionLevel(user.permissionLevel);
       }
 
-      Promise.all([
-        getCategoryKeys(), 
-        getInventoryItems(),
+      Promise.all([ 
+        getInventoryItems(colDefs),
       ]).then((data) => {
-        const columnDefs = data[0].map((field: {field: string}) => {
-          return {
-            field: field.field,
-          }
-        });
-        setColDefs(columnDefs);
-
-        const rowData: string[] = data[1].map((row: {
+        if (data === null) return;
+        const rowData: string[] = data[0].map((row: {
           _id: number;
         }) => {
           return {
@@ -233,7 +225,6 @@ export default function Dashboard() {
         console.error(err);
       });
       document.title = "Inventarisatie - Dashboard";
-
       setPermission();
       isLoggedIn();
   }, []);

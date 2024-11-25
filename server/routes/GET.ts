@@ -15,7 +15,7 @@ const BASE_DIR = __dirname;
 const CATEGORY_JSON = path.join(BASE_DIR, "../data", "categories.json");
 const CATEGORY_DATA = JSON.parse(fs.readFileSync(CATEGORY_JSON, "utf-8"));
 
-routerGet.get(
+routerGet.post(
   "/inventory",
   async (req: Request, res: Response, _next: NextFunction) => {
     const entries = await Inventory.getEntries();
