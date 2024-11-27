@@ -42,16 +42,15 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
         category_id: number;
     }) {
         const keyArray: string[] = []
-        const items = await CategoryItems.findAll({
+        const items: CategoryItems[] = await CategoryItems.findAll({
             where: {
                 category_id: category.category_id
             }
         })
-        Object.keys(items).forEach(([value]) => {
-            console.log(value)
-            keyArray.push(value);
-        })
-        console.log(keyArray);
+        items.forEach((value) => {
+            keyArray.push(value.item_name);
+        });
+        console.log(keyArray)
         return keyArray;
     }
 }
