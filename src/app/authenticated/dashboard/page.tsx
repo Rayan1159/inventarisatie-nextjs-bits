@@ -17,10 +17,11 @@ export default function Dashboard() {
   const [category, setCategory] = React.useState('');
   const [permissionLevel, setPermissionLevel] = React.useState(0);
 
-  const [preLoadedRowData] = React.useState<Record<string, any>>([])
   const [dynamicRowData] = React.useState<Record<string, any>>({})
   const [colDefs, setColDefs] = React.useState<Record<string, any>>([])
   const [rowData, setRowData] = React.useState<any[]>()
+
+  const [inventoryForm] = React.useState<Record<string ,any>>({});
 
   const inventoryInterfaceStyle = {
     display: 'flex',
@@ -71,17 +72,17 @@ export default function Dashboard() {
     const data = await categoryExists(category);
     const response = await data.json();
     if (response.exists === true) {
-      // const keys = await data.keys();
-      // keys.forEach((value, key) => {
-      //     preLoadedRowData.push(value.name)
-      // });
-     
-      // Object.entries(preLoadedRowData).forEach(([key, value]) => {
-      //     dynamicRowData[value] = value;
-      // })
-
-      const inventoryKeys = await getCategoryInventoryKeys(category);
-      console.log(inventoryKeys);
+      const inventoryKeys: string[] = await getCategoryInventoryKeys(category);
+      inventoryKeys.forEach((value, key) => {
+        inventoryForm[value] = value;
+        const col = {
+          field: value,
+        }
+        console.log(col);
+        setColDefs([{
+          ...col,
+        }])
+      });
     }
     assignInputs(category);
   }
@@ -144,27 +145,13 @@ export default function Dashboard() {
     }
   }
 
-  const [inventoryForm, setInventoryForm] = React.useState({
-    name: '',
-    description: '',
-    additional: '',
-    place: '',
-    processor: '',
-    ram: '',
-    drive: '',
-    powerCable: '',
-    needsAdditional: '',
-    recentActions: '',
-    requiredAction: ''
-  });
-
-  const handleInventoryInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setInventoryForm({
-      ...inventoryForm,
-      [name]: value,
-    });
-  };
+  // const handleInventoryInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = event.target;
+  //   setInventoryForm({
+  //     ...inventoryForm,
+  //     [name]: value,
+  //   });
+  // };
 
   const handleInventorySubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -253,7 +240,7 @@ export default function Dashboard() {
                 fullWidth
                 label={field.placeholder}
                 name={field.name}
-                onChange={handleInventoryInputChange}
+                // onChange={handleInventoryInputChange}
                 variant="outlined"
               />
             </Grid>
