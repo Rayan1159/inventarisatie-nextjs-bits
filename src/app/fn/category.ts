@@ -50,7 +50,7 @@ export const getCategoryKeys = async () => {
 
 export const getCategoryInventoryKeys = async (category: string) => {
     const response = await fetch(`http://localhost:8000/database/inventory/categories/content/keys`, {
-        method: "GET",
+        method: "POST",
         headers: {
             'Content-Type': 'application/json'
         },

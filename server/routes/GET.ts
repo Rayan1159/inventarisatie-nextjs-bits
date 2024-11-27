@@ -40,6 +40,19 @@ routerGet.get(
 )
 
 routerGet.post(
+  "/inventory/categories/content/keys",
+  async (req, res, next) => {
+    const { category } = req.body
+    if (!category) return res.status(400).json({ error: "No category provided" });
+    const categoryId = await Category.getCategoryId(category)
+    const itemsAsKeys = await CategoryItems.getItemsAsKeys({ category_id: categoryId} as { 
+      category_id: number 
+    });
+    if (itemsAsKeys) res.status(200).json(itemsAsKeys)
+  }
+)
+
+routerGet.post(
   "/inventory/categories/exists",
   async (req, res, _next) => {
       const categories = await Category.getCategories()

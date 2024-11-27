@@ -5,8 +5,8 @@ import Modal from '@mui/material/Modal';
 import { AgGridReact } from "ag-grid-react";
 import { Box, Typography, TextField, Button, Stack, Grid2 as Grid } from "@mui/material";
 import { DashboardHeader } from "@/app/components/DashboardHeader";
-import { categoryExists, getCategoryKeys, setNewCategory } from "@/app/requests/inventory";
-import { getInventoryItems } from "@/app/fn/category";
+import { categoryExists, setNewCategory } from "@/app/requests/inventory";
+import { getCategoryInventoryKeys, getInventoryItems } from "@/app/fn/category";
 import { redirect } from "next/navigation";
 import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
@@ -71,17 +71,18 @@ export default function Dashboard() {
     const data = await categoryExists(category);
     const response = await data.json();
     if (response.exists === true) {
-      const keys = await data.keys();
-      keys.forEach((value, key) => {
-          preLoadedRowData.push(value.name)
-      });
+      // const keys = await data.keys();
+      // keys.forEach((value, key) => {
+      //     preLoadedRowData.push(value.name)
+      // });
      
-      Object.entries(preLoadedRowData).forEach(([key, value]) => {
-          dynamicRowData[value] = value;
-      })
+      // Object.entries(preLoadedRowData).forEach(([key, value]) => {
+      //     dynamicRowData[value] = value;
+      // })
+
+      const inventoryKeys = await getCategoryInventoryKeys(category);
+      console.log(inventoryKeys);
     }
-    
-    console.log("defs", colDefs)
     assignInputs(category);
   }
 

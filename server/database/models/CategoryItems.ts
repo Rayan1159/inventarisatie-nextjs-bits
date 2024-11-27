@@ -33,6 +33,8 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
         }, {
             sequelize,
             modelName: 'category_items',
+            freezeTableName: true,
+            timestamps: false
         });
     }
 
