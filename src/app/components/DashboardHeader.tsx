@@ -1,7 +1,7 @@
 "use client"
 
 import { HeaderNav } from "@/app/components/SubComponents/HeaderNav";
-import { getCategoryKeys } from "@/app/requests/inventory";
+import { getCategoryKeys } from "@/app/fn/category";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";

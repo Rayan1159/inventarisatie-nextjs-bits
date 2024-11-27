@@ -5,9 +5,11 @@ import sequelize from "../database/sequelize";
 import * as fs from "fs";
 import * as path from "path";
 import Category from "../database/models/Category";
+import { CategoryItems } from "../database/models/CategoryItems";
 
 Inventory.initModel(sequelize);
 Category.initModel(sequelize);
+CategoryItems.initModel(sequelize);
 
 const routerGet = Router();
 
@@ -23,17 +25,11 @@ routerGet.post(
   },
 );
 
-routerGet.get(
-  "/inventory/categories",
-  async (req, res, next) => {
-  res.send(CATEGORY_DATA);
-});
-
-routerGet.get(
+routerGet.post(
   "/inventory/categories/keys",
   async (req, res, next) => {
-    const categories = await Category.getCategories();
-    if (categories) res.json(categories)
+    const keys = await Category.getCategories();
+    if (keys) res.status(200).json(keys);
 });
 
 routerGet.get(

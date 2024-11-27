@@ -78,8 +78,6 @@ export default function Dashboard() {
      
       Object.entries(preLoadedRowData).forEach(([key, value]) => {
           dynamicRowData[value] = value;
-          console.log(value)
-          colDefs["field"] = value;
       })
     }
     
@@ -109,7 +107,7 @@ export default function Dashboard() {
     flex: 1
   }
 
-  const assignInputs = (category) => {
+  const assignInputs = (category: string) => {
       const placeholder = colDefs;
   }
 
@@ -211,9 +209,9 @@ export default function Dashboard() {
       }
 
       Promise.all([ 
-        getInventoryItems(colDefs),
+        getInventoryItems(category),
       ]).then((data) => {
-        if (colDefs.c) return;
+        console.log(data[0]);
         const rowData: string[] = data[0].map((row: {
           _id: number;
         }) => {

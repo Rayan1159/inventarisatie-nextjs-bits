@@ -59,6 +59,7 @@ export class Category extends Model<CategoryAttr, CategoryCreationAttr> {
                 name: category
                 }
             }) as Category;
+            console.log(categoryId);
         return categoryId.id;
     } 
 }

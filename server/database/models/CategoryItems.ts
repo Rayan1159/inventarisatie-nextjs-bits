@@ -1,6 +1,5 @@
 import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 import Category from './Category';
-import { P } from 'pino';
 
 export interface CategoryItemsAttributes {
     id?: number;
@@ -9,15 +8,9 @@ export interface CategoryItemsAttributes {
     item_name: string;
 }
 
-export interface CategoryItemsCreationAttributes extends Optional<CategoryItemsAttributes, "id"> {
-    category_id: number;
-    item_id: number;
-    item_name: string;
-}
-
 export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsCreationAttributes> implements CategoryItemsAttributes {
     id!: number;
-    category_id!: number;
+    category_id: number;
     item_id!: number;
     item_name!: string;
 
@@ -28,18 +21,10 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
             category_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                references: {
-                    model: 'categories',
-                    key: 'id'
-                }
             },
             item_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                references: {
-                    model: 'items',
-                    key: 'id'
-                }
             },
             item_name: {
                 type: DataTypes.STRING,
@@ -48,20 +33,6 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
         }, {
             sequelize,
             modelName: 'category_items',
-        });
-
-        CategoryItems.belongsTo(Category, {
-            foreignKey: 'category_id',
-            as: 'category',
-            onDelete: 'CASCADE',
-        });
-    }
-
-    static associate(models: any) {
-        CategoryItems.belongsTo(models.Category, {
-            foreignKey: 'category_id',
-            as: 'category',
-            onDelete: 'CASCADE',
         });
     }
 
@@ -78,6 +49,7 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
             console.log(value)
             keyArray.push(value);
         })
+        console.log(keyArray);
         return keyArray;
     }
 }
