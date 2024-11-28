@@ -86,6 +86,10 @@ export default function Dashboard() {
     assignInputs(category);
   }
 
+  const categoriesEmpty = () => {
+    return category.length === 0;
+  }
+
   const handleCallback = (childData: any) => {
     reloadGrid(childData);
   }
@@ -195,23 +199,23 @@ export default function Dashboard() {
         setPermissionLevel(user.permissionLevel);
       }
 
-      Promise.all([ 
-        getInventoryItems(category),
-      ]).then((data) => {
-        console.log(data[0]);
-        // const rowData: string[] = data[0].map((row: {
-        //   _id: number;
-        // }) => {
-        //   return {
-        //     ...row,
-        //     id: row._id,
-        //   }
-        // });
-        // setRowData(rowData);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      // Promise.all([ 
+      //   getInventoryItems(category),
+      // ]).then((data) => {
+      //   console.log(data[0]);
+      //   // const rowData: string[] = data[0].map((row: {
+      //   //   _id: number;
+      //   // }) => {
+      //   //   return {
+      //   //     ...row,
+      //   //     id: row._id,
+      //   //   }
+      //   // });
+      //   // setRowData(rowData);
+      // })
+      // .catch((err) => {
+      //   console.error(err);
+      // });
       document.title = "Inventarisatie - Dashboard";
       setPermission();
       isLoggedIn();

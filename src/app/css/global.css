@@ -24,6 +24,10 @@ a:hover {
     color: rgb(255, 79, 79);
 }
 
+html {
+    background-image: url(../logo.jpg);
+}
+
 .global-header-wrapper {
     width: 100%;
 }
