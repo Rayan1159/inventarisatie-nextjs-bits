@@ -30,6 +30,10 @@ export function DashboardHeader({ headerNavClassname, parentCallback }: Dashboar
     return;
   }
 
+  const categoriesEmpty = () => {
+    return selectItems.length === 0;
+  }
+
   useEffect(() => {
     const fetchSelectItems = async (): Promise<React.ReactNode[]> => {
       const keys = await getCategoryKeys();
@@ -50,18 +54,26 @@ export function DashboardHeader({ headerNavClassname, parentCallback }: Dashboar
           <li>
             <Link href="/logout">Logout</Link>
           </li>
-          <li> 
-            <select 
-              style={selectMenuStyle} 
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                setSelectValue(e.target.value)
-                categoryChangeTrigger(e)
-              }}
-             >
-              <option>Select category</option> 
-              {selectItems}
-            </select>
-          </li>
+          {!categoriesEmpty() ? 
+           <li> 
+           <select 
+             style={selectMenuStyle} 
+             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+               setSelectValue(e.target.value)
+               categoryChangeTrigger(e)
+             }}
+            >
+             <option>Select category</option> 
+             {selectItems}
+           </select>
+         </li>
+         : <button style={{
+          background: "red",
+          border: "none",
+          width: "50%",
+          borderRadius: "5px",
+          height: "35px",
+         }}>Add first category</button>}
         </HeaderNav>
       </nav>
     </div>

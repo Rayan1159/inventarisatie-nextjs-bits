@@ -19,7 +19,7 @@ export default function Dashboard() {
 
   const [dynamicRowData] = React.useState<Record<string, any>>({})
   const [colDefs, setColDefs] = React.useState<Record<string, any>>([])
-  const [rowData, setRowData] = React.useState<any[]>()
+  const [rowData, setRowData] = React.useState<Record<string, any>>([])
 
   const [inventoryForm] = React.useState<Record<string ,any>>({});
 
@@ -74,15 +74,14 @@ export default function Dashboard() {
     if (response.exists === true) {
       const inventoryKeys: string[] = await getCategoryInventoryKeys(category);
       inventoryKeys.forEach((value, key) => {
-        inventoryForm[value] = value;
-        const col = {
-          field: value,
-        }
-        console.log(col);
+        setRowData({
+            [value]: value
+        })
         setColDefs([{
-          ...col,
+          field: value,
         }])
       });
+      console.log(inventoryForm);
     }
     assignInputs(category);
   }
@@ -200,15 +199,15 @@ export default function Dashboard() {
         getInventoryItems(category),
       ]).then((data) => {
         console.log(data[0]);
-        const rowData: string[] = data[0].map((row: {
-          _id: number;
-        }) => {
-          return {
-            ...row,
-            id: row._id,
-          }
-        });
-        setRowData(rowData);
+        // const rowData: string[] = data[0].map((row: {
+        //   _id: number;
+        // }) => {
+        //   return {
+        //     ...row,
+        //     id: row._id,
+        //   }
+        // });
+        // setRowData(rowData);
       })
       .catch((err) => {
         console.error(err);
