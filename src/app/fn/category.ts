@@ -1,4 +1,4 @@
-import { setNewCategory } from "../requests/inventory";
+import { categoryExists, setNewCategory } from "../requests/inventory";
 import React from "react";
 
 export const categoryNewRow = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -56,6 +56,11 @@ export const getCategoryInventoryKeys = async (category: string) => {
         },
         body: JSON.stringify({ category })
     });
+
+    // if (await categoryExists(category)) {
+    //     console.log(json);
+    // }
+
     return response.json();
 }
 

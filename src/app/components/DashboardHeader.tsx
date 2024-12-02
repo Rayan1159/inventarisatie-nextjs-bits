@@ -17,12 +17,6 @@ export function DashboardHeader({ headerNavClassname, parentCallback }: Dashboar
   const [selectValue, setSelectValue] = useState("");
   const [selectItems, setSelectItems] = useState<React.ReactNode[]>([]);
 
-  const [open, setOpen] = useState({
-    modal: {
-      open: false
-    }
-  });
-
   const selectMenuStyle = {
     backgroundColor: "transparent",
     border: "none",
@@ -30,24 +24,6 @@ export function DashboardHeader({ headerNavClassname, parentCallback }: Dashboar
     borderRadius: "5px",
     color: "white",
   }
-
-  const inventoryInterfaceStyle = {
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    alignItems: 'center',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600, 
-    height: 250,
-    background: "white",
-    border: '1px solid #000',
-    borderRadius: 5,
-    boxShadow: 24,
-    p: 4,
-  };
 
   const categoryChangeTrigger = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (event.target.value === "Select category") return;
@@ -72,44 +48,9 @@ export function DashboardHeader({ headerNavClassname, parentCallback }: Dashboar
     });
   }, []);
 
-
-  const handleOpen = (modal: string) => setOpen({
-    ...open,
-    modal: {
-      open: true
-    }
-  })
-
-  const handleClose = (modal: string) => setOpen({
-    ...open,
-    modal: {
-      open: false
-    }
-  })
-  
-
   return (
     <div>
       <nav className={headerNavClassname}>
-        <Modal
-            open={open.modal.open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-         <Box sx={inventoryInterfaceStyle}>
-          <TextField
-              fullWidth
-              label={"Category name"}
-              name={"category"}
-              variant="outlined"
-            ></TextField>
-            <Button style={{
-              marginTop: 20,
-              width: 300
-             }} variant="contained">Add</Button>
-         </Box>
-        </Modal>
         <HeaderNav>
           <li>
             <Link href="/logout">Logout</Link>
@@ -133,8 +74,7 @@ export function DashboardHeader({ headerNavClassname, parentCallback }: Dashboar
             width: "50%",
             borderRadius: "5px",
             height: "35px",
-         }}
-         onClick={() => handleOpen("modal")}>Add first category</button>}
+         }}>No categories found</button>}
         </HeaderNav>
       </nav>
     </div>

@@ -6,7 +6,7 @@ import { AgGridReact } from "ag-grid-react";
 import { Box, Typography, TextField, Button, Stack, Grid2 as Grid } from "@mui/material";
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { categoryExists, setNewCategory } from "@/app/requests/inventory";
-import { getCategoryInventoryKeys, getInventoryItems } from "@/app/fn/category";
+import { getCategoryInventoryKeys } from "@/app/fn/category";
 import { redirect } from "next/navigation";
 import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
@@ -17,11 +17,10 @@ export default function Dashboard() {
   const [category, setCategory] = React.useState('');
   const [permissionLevel, setPermissionLevel] = React.useState(0);
 
-  const [dynamicRowData] = React.useState<Record<string, any>>({})
-  const [colDefs, setColDefs] = React.useState<Record<string, any>>([])
+  const [colDefs, setColDefs] = React.useState<Record<string, any>[]>([])
   const [rowData, setRowData] = React.useState<Record<string, any>>([])
 
-  const [inventoryForm] = React.useState<Record<string ,any>>({});
+  const [inventoryForm, setInventoryForm] = React.useState<Record<string ,any>>({});
 
   const inventoryInterfaceStyle = {
     display: 'flex',
@@ -71,23 +70,21 @@ export default function Dashboard() {
   const reloadGrid = async (category: string) => {
     const data = await categoryExists(category);
     const response = await data.json();
+    console.log(response.exists);
     if (response.exists === true) {
       const inventoryKeys: string[] = await getCategoryInventoryKeys(category);
       inventoryKeys.forEach((value, key) => {
-        setRowData({
-            [value]: value
-        })
-        setColDefs([{
-          field: value,
-        }])
+        console.log(value);
+        // setColDefs([{
+        //   field: value
+        // }]);
+        setColDefs(colDefs => [...colDefs, {
+          field: value
+        }]);
       });
-      console.log(inventoryForm);
     }
+    console.log(colDefs);
     assignInputs(category);
-  }
-
-  const categoriesEmpty = () => {
-    return category.length === 0;
   }
 
   const handleCallback = (childData: any) => {
@@ -113,22 +110,22 @@ export default function Dashboard() {
   }
 
   const assignInputs = (category: string) => {
-      const placeholder = colDefs;
-  }
 
-  const inputFields = [
-    { placeholder: "Name", name: "name" },
-    { placeholder: "Description", name: "description" },
-    { placeholder: "Additional", name: "additional" },
-    { placeholder: "Place", name: "place" },
-    { placeholder: "Processor", name: "processor" },
-    { placeholder: "RAM", name: "ram" },
-    { placeholder: "Drive", name: "drive" },
-    { placeholder: "Power cable", name: "powerCable" },
-    { placeholder: "Needs additional", name: "needsAdditional" },
-    { placeholder: "Recent actions", name: "recentActions" },
-    { placeholder: "Required action", name: "requiredAction" }
-  ];
+    colDefs.forEach((col) => {
+      console.log(col);
+    });
+
+    const newInputFields = colDefs.map(col => ({
+      placeholder: col.field,
+      name: col.field
+    }));
+
+    setInventoryForm([
+      ...newInputFields
+    ]);
+
+    console.log(inventoryForm);
+  }
 
   const categoryOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target == null) return;
@@ -180,6 +177,21 @@ export default function Dashboard() {
     return permissionLevel >= 1;
   }
 
+  const inputFields = [
+    { placeholder: "Name", name: "name" },
+    { placeholder: "Description", name: "description" },
+    { placeholder: "Additional", name: "additional" },
+    { placeholder: "Place", name: "place" },
+    { placeholder: "Processor", name: "processor" },
+    { placeholder: "RAM", name: "ram" },
+    { placeholder: "Drive", name: "drive" },
+    { placeholder: "Power cable", name: "powerCable" },
+    { placeholder: "Needs additional", name: "needsAdditional" },
+    { placeholder: "Recent actions", name: "recentActions" },
+    { placeholder: "Required action", name: "requiredAction" }
+  ];
+
+
   React.useEffect(() => {
       const storageExists = () => {
         return localStorage.getItem("user") !== null;
@@ -198,27 +210,10 @@ export default function Dashboard() {
         if (!storageExists()) return;
         setPermissionLevel(user.permissionLevel);
       }
-
-      // Promise.all([ 
-      //   getInventoryItems(category),
-      // ]).then((data) => {
-      //   console.log(data[0]);
-      //   // const rowData: string[] = data[0].map((row: {
-      //   //   _id: number;
-      //   // }) => {
-      //   //   return {
-      //   //     ...row,
-      //   //     id: row._id,
-      //   //   }
-      //   // });
-      //   // setRowData(rowData);
-      // })
-      // .catch((err) => {
-      //   console.error(err);
-      // });
-      document.title = "Inventarisatie - Dashboard";
       setPermission();
       isLoggedIn();
+
+      document.title = "Inventarisatie - Dashboard";
   }, []);
 
   return (
