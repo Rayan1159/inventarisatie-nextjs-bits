@@ -14,7 +14,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-community/styles/ag-grid.css";
 
 export default function Dashboard() {
-  const [category, setCategory] = React.useState('');
+  const [activeCategory, setCategory] = React.useState("");
   const [permissionLevel, setPermissionLevel] = React.useState(0);
 
   const [colDefs, setColDefs] = React.useState<Record<string, any>[]>([])
@@ -70,21 +70,24 @@ export default function Dashboard() {
   const reloadGrid = async (category: string) => {
     const data = await categoryExists(category);
     const response = await data.json();
+
+    if (category !== activeCategory) {
+      setColDefs(colDefs => []);
+    }
+
     console.log(response.exists);
     if (response.exists === true) {
       const inventoryKeys: string[] = await getCategoryInventoryKeys(category);
       inventoryKeys.forEach((value, key) => {
         console.log(value);
-        // setColDefs([{
-        //   field: value
-        // }]);
         setColDefs(colDefs => [...colDefs, {
           field: value
         }]);
       });
     }
+
+    setCategory(category);
     console.log(colDefs);
-    assignInputs(category);
   }
 
   const handleCallback = (childData: any) => {
@@ -219,7 +222,7 @@ export default function Dashboard() {
   return (
     <div className="container">
       <header className="global-header-wrapper">
-        <DashboardHeader headerNavClassname="global-header" categoryState={category} parentCallback={handleCallback}/>
+        <DashboardHeader headerNavClassname="global-header" categoryState={activeCategory} parentCallback={handleCallback}/>
       </header>
       <div className="dashboard-container">
       <Modal
@@ -229,7 +232,7 @@ export default function Dashboard() {
         aria-describedby="modal-modal-description">
         <Box component="form" sx={inventoryInterfaceStyle} onSubmit={handleInventorySubmit}>
         <Typography id="modal-modal-title" variant="h6" component="h2" gutterBottom>
-          New Inventory Entry for category {category}
+          New Inventory Entry for category {activeCategory}
         </Typography>
         <Grid container spacing={2}>
           {inputFields.map((field, index) => (
@@ -270,7 +273,7 @@ export default function Dashboard() {
                 label="Category"
                 variant="outlined"
                 name="category"
-                value={category}
+                value={activeCategory}
                 onChange={categoryOnChange}
               />
               <Button variant="contained" onClick={addNewCategory}>
