@@ -20,7 +20,7 @@ export default function Dashboard() {
   const [colDefs, setColDefs] = React.useState<Record<string, any>[]>([])
   const [rowData, setRowData] = React.useState<Record<string, any>[]>([])
 
-  const [inventoryForm, setInventoryForm] = React.useState<Record<string ,any>[]>([]);
+  const [inventoryForm] = React.useState<Record<string ,any>[]>([]);
 
   const inventoryInterfaceStyle = {
     display: 'flex',
@@ -123,24 +123,12 @@ export default function Dashboard() {
   }
 
   const assignInputs = () => {
-    console.log(colDefs);
-    colDefs.forEach((col) => {
-      console.log('assignInputs', col);
-    });
-
     const newInputFields = colDefs.map(col => ({
       placeholder: col.field,
       name: col.field
     }));
-
-    console.log(...newInputFields);
-
-    setInventoryForm((prev) => [{
-      ...prev,
-      ...newInputFields
-    }])
-
-    console.log(inventoryForm);
+    inventoryForm.push(...newInputFields);
+    return inventoryForm;
   }
 
   const categoryOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,19 +160,19 @@ export default function Dashboard() {
   const handleInventorySubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    setInventoryForm({
-      name: '',
-      description: '',
-      additional: '',
-      place: '',
-      processor: '',
-      ram: '',
-      drive: '',
-      powerCable: '',
-      needsAdditional: '',
-      recentActions: '',
-      requiredAction: ''
-    });
+    // setInventoryForm({
+    //   name: '',
+    //   description: '',
+    //   additional: '',
+    //   place: '',
+    //   processor: '',
+    //   ram: '',
+    //   drive: '',
+    //   powerCable: '',
+    //   needsAdditional: '',
+    //   recentActions: '',
+    //   requiredAction: ''
+    // });
 
     handleClose('modalOne')();
   };
@@ -192,21 +180,6 @@ export default function Dashboard() {
   const hasPermission = () => {
     return permissionLevel >= 1;
   }
-
-  const inputFields = [
-    { placeholder: "Name", name: "name" },
-    { placeholder: "Description", name: "description" },
-    { placeholder: "Additional", name: "additional" },
-    { placeholder: "Place", name: "place" },
-    { placeholder: "Processor", name: "processor" },
-    { placeholder: "RAM", name: "ram" },
-    { placeholder: "Drive", name: "drive" },
-    { placeholder: "Power cable", name: "powerCable" },
-    { placeholder: "Needs additional", name: "needsAdditional" },
-    { placeholder: "Recent actions", name: "recentActions" },
-    { placeholder: "Required action", name: "requiredAction" }
-  ];
-
 
   React.useEffect(() => {
       const storageExists = () => {
@@ -248,7 +221,7 @@ export default function Dashboard() {
           New Inventory Entry for category {activeCategory}
         </Typography>
         <Grid container spacing={2}>
-          {inputFields.map((field, index) => (
+          {inventoryForm.map((field, index) => (
             <Grid key={index}>
               <TextField
                 fullWidth
