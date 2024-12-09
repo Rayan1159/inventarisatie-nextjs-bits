@@ -1,5 +1,8 @@
 import { categoryExists, setNewCategory } from "../requests/inventory";
 import React from "react";
+import CircularJSON from "circular-json";
+
+
 
 export const categoryNewRow = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -64,13 +67,13 @@ export const getCategoryInventoryKeys = async (category: string) => {
     return response.json();
 }
 
-export const setCategoryItems = async (category: string, items: string[]) => {
-    const response = await fetch(`http://localhost:8000/database/inventory/categories/update`, {
+export const setCategoryItems = async (category: string, items: Record<string, any>) => {
+    const response = await fetch(`http://localhost:8000/database/inventory/categories/items/update`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ category, items })
+        body: JSON.stringify({category, items})
     });
     return response.json();
 }   

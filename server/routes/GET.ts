@@ -39,6 +39,18 @@ routerGet.get(
   }
 )
 
+routerGet.post('/inventory/categories/items/update', async (req, res, next) => {
+  const { category , items } = req.body;
+  console.log(items);
+  if (!category) return res.status(400).json({ error: "No category provided" });
+  const categoryId = await Category.getCategoryId(category);
+  if (!categoryId) return res.status(400).json({ error: "Category does not exist" });
+  await CategoryItems.addCategoryItems(categoryId as number, items);
+  res.status(200).json({
+    status: 200,
+  });
+});
+
 routerGet.post(
   "/inventory/categories/content/keys",
   async (req, res, next) => {
@@ -80,6 +92,5 @@ routerGet.post(
     status: 200,
   });
 });
-
 
 export default routerGet;

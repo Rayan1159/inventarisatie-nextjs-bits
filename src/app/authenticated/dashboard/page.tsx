@@ -6,7 +6,7 @@ import { AgGridReact } from "ag-grid-react";
 import { Box, Typography, TextField, Button, Stack, Grid2 as Grid } from "@mui/material";
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { categoryExists, setNewCategory } from "@/app/requests/inventory";
-import { getCategoryInventoryKeys } from "@/app/fn/category";
+import { getCategoryInventoryKeys, setCategoryItems } from "@/app/fn/category";
 import { redirect } from "next/navigation";
 import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
@@ -20,7 +20,7 @@ export default function Dashboard() {
   const [colDefs, setColDefs] = React.useState<Record<string, any>[]>([])
   const [rowData, setRowData] = React.useState<Record<string, any>[]>([])
 
-  const [inventoryForm] = React.useState<Record<string ,any>[]>([]);
+  const [inventoryForm, setInventoryForm] = React.useState<Record<string ,any>[]>([]);
 
   const inventoryInterfaceStyle = {
     display: 'flex',
@@ -127,7 +127,8 @@ export default function Dashboard() {
       placeholder: col.field,
       name: col.field
     }));
-    inventoryForm.push(...newInputFields);
+
+    setInventoryForm(form => [...form, ...newInputFields]);
     return inventoryForm;
   }
 
@@ -149,13 +150,27 @@ export default function Dashboard() {
     }
   }
 
-  // const handleInventoryInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = event.target;
-  //   setInventoryForm({
-  //     ...inventoryForm,
-  //     [name]: value,
-  //   });
-  // };
+  const addCategoryItem = () => {
+    const inventoryItems = inventoryForm.map((item) => {
+      return {
+        item_name: item.name,
+      }
+    });
+    setCategoryItems(activeCategory, {
+      ...inventoryItems
+    })
+  }
+
+  const handleInventoryInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setInventoryForm((prevForm) =>
+      prevForm.map((item) =>
+        item.name === name 
+          ? { ...item, placeholder: value }
+          : item 
+      )
+    );
+  };
 
   const handleInventorySubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -227,14 +242,14 @@ export default function Dashboard() {
                 fullWidth
                 label={field.placeholder}
                 name={field.name}
-                // onChange={handleInventoryInputChange}
+                onChange={handleInventoryInputChange}
                 variant="outlined"
               />
             </Grid>
           ))}
         </Grid>
         <Stack direction="row" spacing={2} sx={{ mt: 3, justifyContent: 'flex-end' }}>
-          <Button variant="contained" color="primary" type="submit">
+          <Button variant="contained" color="primary" type="submit" onClick={addCategoryItem}>
             Submit
              </Button>
               <Button variant="outlined" onClick={handleClose('modalOne')}>
@@ -262,7 +277,7 @@ export default function Dashboard() {
                 value={activeCategory}
                 onChange={categoryOnChange}
               />
-              <Button variant="contained" onClick={addNewCategory}>
+              <Button variant="contained" onClick={addCategoryItem}>
                 Add
               </Button>
             </Stack>

@@ -16,6 +16,7 @@
     "@types/express": "^5.0.0",
     "ag-grid-react": "^32.3.0",
     "argon2": "^0.41.1",
+    "circular-json": "^0.5.9",
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "mysql2": "^3.11.3",
