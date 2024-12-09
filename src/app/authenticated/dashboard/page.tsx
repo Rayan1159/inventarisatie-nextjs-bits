@@ -18,9 +18,9 @@ export default function Dashboard() {
   const [permissionLevel, setPermissionLevel] = React.useState(0);
 
   const [colDefs, setColDefs] = React.useState<Record<string, any>[]>([])
-  const [rowData, setRowData] = React.useState<Record<string, any>>([])
+  const [rowData, setRowData] = React.useState<Record<string, any>[]>([])
 
-  const [inventoryForm, setInventoryForm] = React.useState<Record<string ,any>>({});
+  const [inventoryForm, setInventoryForm] = React.useState<Record<string ,any>[]>([]);
 
   const inventoryInterfaceStyle = {
     display: 'flex',
@@ -55,7 +55,7 @@ export default function Dashboard() {
     border: '1px solid #000',
     borderRadius: 5,
     boxShadow: 24,
-    p: 4,
+    p: 4
   }
 
   const [open, setOpen] = React.useState({
@@ -67,27 +67,37 @@ export default function Dashboard() {
     }
   });
 
+  const cleanGridData = () => {
+    setColDefs(colDefs => []);
+    rowData?.forEach(row => row.values.forEach(value => value.value = null));
+  }
+
   const reloadGrid = async (category: string) => {
     const data = await categoryExists(category);
     const response = await data.json();
 
     if (category !== activeCategory) {
-      setColDefs(colDefs => []);
+      cleanGridData();
     }
 
-    console.log(response.exists);
     if (response.exists === true) {
       const inventoryKeys: string[] = await getCategoryInventoryKeys(category);
       inventoryKeys.forEach((value, key) => {
-        console.log(value);
         setColDefs(colDefs => [...colDefs, {
           field: value
         }]);
+
+        colDefs.push({
+          field: value
+        });
+
+        setRowData(row => [...rowData, {
+          [value]: ""
+        }])
       });
     }
-
+    assignInputs();
     setCategory(category);
-    console.log(colDefs);
   }
 
   const handleCallback = (childData: any) => {
@@ -112,10 +122,10 @@ export default function Dashboard() {
     flex: 1
   }
 
-  const assignInputs = (category: string) => {
-
+  const assignInputs = () => {
+    console.log(colDefs);
     colDefs.forEach((col) => {
-      console.log(col);
+      console.log('assignInputs', col);
     });
 
     const newInputFields = colDefs.map(col => ({
@@ -123,9 +133,12 @@ export default function Dashboard() {
       name: col.field
     }));
 
-    setInventoryForm([
+    console.log(...newInputFields);
+
+    setInventoryForm((prev) => [{
+      ...prev,
       ...newInputFields
-    ]);
+    }])
 
     console.log(inventoryForm);
   }
@@ -141,8 +154,8 @@ export default function Dashboard() {
       return;
     }
 
-    if (category) {
-      setNewCategory(category);
+    if (activeCategory) {
+      setNewCategory(activeCategory);
     } else {
       console.error('category cannot be empty');
     }
