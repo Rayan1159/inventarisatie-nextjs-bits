@@ -1,6 +1,4 @@
-import { DataTypes, Model, Optional, Sequelize, where } from 'sequelize';
-import Category from './Category';
-import { addColumn } from '../../../src/app/fn/category';
+import { DataTypes, Model, Sequelize} from 'sequelize';
 
 export interface CategoryItemsAttributes {
     id?: number;
@@ -48,7 +46,6 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
     }
 
     static async addCategoryItems(id: number, name: string) {
-        console.log('creating');
         await CategoryItems.create({
             item_name: name,
             category_id: id

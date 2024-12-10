@@ -56,10 +56,8 @@ routerGet.post('/inventory/categories/items/update', async (req, res, next) => {
       return res.status(400).json({ error: "Category does not exist" });
     }
 
-    // Add category items
     await CategoryItems.addCategoryItems(categoryId, items.item_name);
 
-    // Send response
     res.status(200).json({
       status: 200,
       message: "Category items updated successfully.",

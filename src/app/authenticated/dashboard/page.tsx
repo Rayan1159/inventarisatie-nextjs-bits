@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React from "react";
 import Modal from '@mui/material/Modal';
@@ -12,6 +12,7 @@ import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-community/styles/ag-grid.css";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const [activeCategory, setCategory] = React.useState("");
@@ -23,6 +24,7 @@ export default function Dashboard() {
   const [inventoryForm, setInventoryForm] = React.useState<Record<string ,any>[]>([]);
   const [categoryData, setCategoryDataForm] = React.useState<string>("");
 
+  const router = useRouter();
 
   const inventoryInterfaceStyle = {
     display: 'flex',
@@ -71,6 +73,10 @@ export default function Dashboard() {
       isActive: false
     }
   });
+
+  const reloadPage = () => {
+    router.refresh();
+  }
 
   const cleanGridData = () => {
     setColDefs(colDefs => []);
@@ -175,6 +181,7 @@ export default function Dashboard() {
     setCategoryItems(activeCategory, {
       item_name: categoryData
     });
+    router.refresh();
   }
 
   const handleInventoryInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
