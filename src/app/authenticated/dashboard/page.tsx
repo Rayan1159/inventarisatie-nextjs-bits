@@ -6,7 +6,7 @@ import { AgGridReact } from "ag-grid-react";
 import { Box, Typography, TextField, Button, Stack, Grid2 as Grid } from "@mui/material";
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { categoryExists, setNewCategory } from "@/app/requests/inventory";
-import { getCategoryInventoryKeys, setCategoryItems } from "@/app/fn/category";
+import { addColumn, getCategoryInventoryKeys, setCategoryItems } from "@/app/fn/category";
 import { redirect } from "next/navigation";
 import '@/app/css/global.css';
 import "@/app/css/Dashboard.css";
@@ -21,6 +21,8 @@ export default function Dashboard() {
   const [rowData, setRowData] = React.useState<Record<string, any>[]>([])
 
   const [inventoryForm, setInventoryForm] = React.useState<Record<string ,any>[]>([]);
+  const [categoryData, setCategoryDataForm] = React.useState<string>("");
+
 
   const inventoryInterfaceStyle = {
     display: 'flex',
@@ -64,12 +66,19 @@ export default function Dashboard() {
     },
     modalTwo: {
       isActive: false
+    },
+    modalThree: {
+      isActive: false
     }
   });
 
   const cleanGridData = () => {
     setColDefs(colDefs => []);
     rowData?.forEach(row => row.values.forEach(value => value.value = null));
+  }
+
+  const updateColumn = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCategoryDataForm(event.target.value);
   }
 
   const reloadGrid = async (category: string) => {
@@ -159,6 +168,13 @@ export default function Dashboard() {
     setCategoryItems(activeCategory, {
       ...inventoryItems
     })
+  }
+
+  const addColumnToCategory = () => {
+    if(!activeCategory) return;
+    setCategoryItems(activeCategory, {
+      item_name: categoryData
+    });
   }
 
   const handleInventoryInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -277,7 +293,32 @@ export default function Dashboard() {
                 value={activeCategory}
                 onChange={categoryOnChange}
               />
+              
               <Button variant="contained" onClick={addCategoryItem}>
+                Add
+              </Button>
+            </Stack>
+          </Box>
+        </Modal>
+        <Modal
+          open={open.modalThree.isActive}
+          onClose={handleClose("modalThree")}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"  
+        >
+          <Box sx={categoryInterfaceStyle}>
+            <Typography id="modal-modal-title" variant="h6" component="h2" gutterBottom>
+              Nieuw column toevoegen aan categorie
+            </Typography>
+            <Stack spacing={2}>
+              <TextField
+                fullWidth
+                label="Column"
+                variant="outlined"
+                name="column"
+                onChange={updateColumn}
+              />
+              <Button variant="contained" onClick={addColumnToCategory}>
                 Add
               </Button>
             </Stack>
@@ -288,6 +329,7 @@ export default function Dashboard() {
            <div className="inventory-button-group">
               <button className="open-interface" onClick={handleOpen('modalOne')}>New inventory entry</button>
               <button className="open-new-category" onClick={handleOpen('modalTwo')}>New category</button>
+              {activeCategory ? <button className="open-new-category" onClick={handleOpen('modalThree')}>Add column to category</button> : null}
             </div> : null
           }
           <div className="grid-res">

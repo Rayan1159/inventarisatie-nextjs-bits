@@ -1,30 +1,23 @@
 import { DataTypes, Model, Optional, Sequelize, where } from 'sequelize';
 import Category from './Category';
+import { addColumn } from '../../../src/app/fn/category';
 
 export interface CategoryItemsAttributes {
     id?: number;
     category_id: number;
-    item_id: number;
     item_name: string;
 }
 
 export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsCreationAttributes> implements CategoryItemsAttributes {
     id!: number;
     category_id: number;
-    item_id!: number;
-    item_name!: string;
-
-    category?: Category;
+    item_name: string;
 
     static initModel(sequelize: Sequelize) {
         CategoryItems.init({
             category_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-            },
-            item_id: {
-                type: DataTypes.INTEGER,
-                allowNull: true,
             },
             item_name: {
                 type: DataTypes.STRING,
@@ -54,12 +47,11 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
         return keyArray;
     }
 
-    static async addCategoryItems(id: number, categoryItems: CategoryItems[]) {
+    static async addCategoryItems(id: number, name: string) {
+        console.log('creating');
         await CategoryItems.create({
-            where: {
-                category_id: id,
-            },
-            items: categoryItems
+            item_name: name,
+            category_id: id
         })
     }
 }

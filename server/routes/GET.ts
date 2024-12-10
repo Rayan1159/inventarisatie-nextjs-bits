@@ -40,16 +40,50 @@ routerGet.get(
 )
 
 routerGet.post('/inventory/categories/items/update', async (req, res, next) => {
-  const { category , items } = req.body;
-  console.log(items);
-  if (!category) return res.status(400).json({ error: "No category provided" });
-  const categoryId = await Category.getCategoryId(category);
-  if (!categoryId) return res.status(400).json({ error: "Category does not exist" });
-  await CategoryItems.addCategoryItems(categoryId as number, items);
-  res.status(200).json({
-    status: 200,
-  });
+  try {
+    const { category, items}: { category: string, items: { 
+      item_name: string
+     } } = req.body;
+
+     console.log(category, items);
+
+    if (!category) {
+      return res.status(400).json({ error: "No category provided" });
+    }
+
+    const categoryId = await Category.getCategoryId(category);
+    if (!categoryId) {
+      return res.status(400).json({ error: "Category does not exist" });
+    }
+
+    // Add category items
+    await CategoryItems.addCategoryItems(categoryId, items.item_name);
+
+    // Send response
+    res.status(200).json({
+      status: 200,
+      message: "Category items updated successfully.",
+    });
+  } catch (error) {
+    console.error('Error updating category items:', error);
+    res.status(500).json({
+      status: 500,
+      error: "An error occurred while updating category items.",
+    });
+  }
 });
+
+routerGet.post(
+  "/inventory/categories/column/add",
+  async (req, res, next) => {
+    const { category, column } = req.body;
+    if (!category) return res.status(400).json({ error: "No category provided" });
+    const categoryId = await Category.getCategoryId(category);
+    if (!categoryId) return res.status(400).json({ error: "Category does not exist" });
+    await CategoryItems.addCategoryItems(categoryId as number, column);
+    res.status(200);
+  }
+)
 
 routerGet.post(
   "/inventory/categories/content/keys",
