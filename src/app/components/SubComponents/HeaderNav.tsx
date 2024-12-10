@@ -1,13 +1,9 @@
-import { ReactNode } from "react"
+import { ReactNode } from "react";
 
 interface HeaderNavAttr {
-    children: ReactNode;
+  children: ReactNode;
 }
 
-export const HeaderNav = ({children}: HeaderNavAttr): JSX.Element => {
-    return (
-        <ul>
-            {children}
-        </ul>
-    )
-}
+export const HeaderNav = ({ children }: HeaderNavAttr): JSX.Element => {
+  return <ul>{children}</ul>;
+};

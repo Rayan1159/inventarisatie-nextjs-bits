@@ -14,7 +14,6 @@ import {
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { categoryExists, setNewCategory } from "@/app/requests/inventory";
 import {
-  addColumn,
   getCategoryInventoryKeys,
   setCategoryItems,
 } from "@/app/fn/category";
