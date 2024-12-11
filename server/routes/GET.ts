@@ -134,8 +134,11 @@ routerGet.post(
 
     const value = await CategoryItems.getCategoryItemValues(catId as number);
 
+    console.log("value from cat", value[0], value[1])
+
     res.status(200).json({
-     value: value
+     key: value[0],
+     value: value[1]
     });
 });
 
@@ -143,10 +146,10 @@ routerGet.post(
   "/inventory/categories/values/update", 
   async (req, res, next) => {
 
-    const { category, value } = req.body;
+    const { category, item, value } = req.body;
     const catId = await Category.getCategoryId(category);
 
-    await CategoryItems.setCategoryItemValue(catId as number, value);
+    await CategoryItems.setCategoryItemValue(catId as number, item,  value);
 
     res.status(200).json({
      status: 200,

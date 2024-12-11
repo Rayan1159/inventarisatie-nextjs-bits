@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { categoryExists, setNewCategory } from "@/app/requests/inventory";
-import { getCategoryInventoryKeys, getCategoryValues, setCategoryItems} from "@/app/fn/category";
+import { addItemValue, getCategoryInventoryKeys, getCategoryValues, setCategoryItems} from "@/app/fn/category";
 import { redirect } from "next/navigation";
 import "@/app/css/global.css";
 import "@/app/css/Dashboard.css";
@@ -101,6 +101,7 @@ export default function Dashboard() {
   const reloadGrid = async (category: string) => {
     const data = await categoryExists(category);
     const categoryValues = await getCategoryValues(category);
+    const values = categoryValues.value;
     const response = await data.json();
 
     if (category !== activeCategory) {
@@ -117,21 +118,20 @@ export default function Dashboard() {
           },
         ]);
 
-        console.log(categoryValues);
-
         colDefs.push({
           field: value,
         });
 
         setRowData((row) => [
           ...rowData,
-          {
-            // ...categoryValues
-          },
+          { 
+            [categoryValues.key]: categoryValues.value
+           }
         ]);
+
+        console.log("row data", rowData)  
       });
     }
-    console.log(categoryValues);
     assignInputs();
     setCategory(category);
   };
@@ -196,13 +196,14 @@ export default function Dashboard() {
 
     const newRow = inventoryForm.reduce((acc, item) => {
       acc[item.name] = item.placeholder || ""; 
+
+      addItemValue(activeCategory, item.name, item.placeholder);
       return acc;
     }, {} as Record<string, any>);
   
 
     setRowData((prevRowData) => [...prevRowData, newRow]);
 
-    alert("New inventory entry added successfully.");
     
     setInventoryForm((prevForm) =>
       prevForm.map((field) => ({ ...field, placeholder: "" }))

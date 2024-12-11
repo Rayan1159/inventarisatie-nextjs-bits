@@ -67,6 +67,8 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
             }
         })
 
+        console.log("value", value)
+
         // if (value == null) {
         //     throw new Error("no value found for category item");
         // }
@@ -76,19 +78,21 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
         // }
 
         return [
-            categoryName,
+            value?.item_name,
             value?.item_value
         ]
     }
 
-    static async setCategoryItemValue(catid: number, value: string) {
+    static async setCategoryItemValue(catid: number, item: string, value: string) {
         await CategoryItems.update({
             item_value: value
         }, {
             where: {
-                category_id: catid
+                item_name: item
             }
         })
+
+        console.log("category item value updated successfully for", item, "with value", value);
     }
 }
 
