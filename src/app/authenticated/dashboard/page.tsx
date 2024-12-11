@@ -13,7 +13,12 @@ import {
 } from "@mui/material";
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { categoryExists, setNewCategory } from "@/app/requests/inventory";
-import { addItemValue, getCategoryInventoryKeys, getCategoryValues, setCategoryItems} from "@/app/fn/category";
+import {
+  addItemValue,
+  getCategoryInventoryKeys,
+  getCategoryValues,
+  setCategoryItems,
+} from "@/app/fn/category";
 import { redirect } from "next/navigation";
 import "@/app/css/global.css";
 import "@/app/css/Dashboard.css";
@@ -101,7 +106,6 @@ export default function Dashboard() {
   const reloadGrid = async (category: string) => {
     const data = await categoryExists(category);
     const categoryValues = await getCategoryValues(category);
-    const values = categoryValues.value;
     const response = await data.json();
 
     if (category !== activeCategory) {
@@ -122,15 +126,19 @@ export default function Dashboard() {
           field: value,
         });
 
-        setRowData((row) => [
-          ...rowData,
-          { 
-            [categoryValues.key]: categoryValues.value
-           }
-        ]);
+        const values = categoryValues.values;
+        // Object.keys(values).forEach((key, index) => {
+       
+        // });
 
-        console.log("row data", rowData)  
+        setRowData((rowData) => [
+          ...rowData,
+          {
+            [values[key].key]: values[key].value
+          },
+        ]);
       });
+
     }
     assignInputs();
     setCategory(category);
@@ -195,16 +203,14 @@ export default function Dashboard() {
     }
 
     const newRow = inventoryForm.reduce((acc, item) => {
-      acc[item.name] = item.placeholder || ""; 
+      acc[item.name] = item.placeholder || "";
 
       addItemValue(activeCategory, item.name, item.placeholder);
       return acc;
     }, {} as Record<string, any>);
-  
 
     setRowData((prevRowData) => [...prevRowData, newRow]);
 
-    
     setInventoryForm((prevForm) =>
       prevForm.map((field) => ({ ...field, placeholder: "" }))
     );
@@ -389,17 +395,17 @@ export default function Dashboard() {
               Nieuw column toevoegen aan categorie
             </Typography>
             <Stack spacing={2}>
-                <TextField
-                  fullWidth
-                  label="Column"
-                  variant="outlined"
-                  name="column"
-                  onChange={updateColumn}
-                />
-                <Button variant="contained" onClick={addColumnToCategory}>
-                  Add
-                </Button>
-              </Stack>
+              <TextField
+                fullWidth
+                label="Column"
+                variant="outlined"
+                name="column"
+                onChange={updateColumn}
+              />
+              <Button variant="contained" onClick={addColumnToCategory}>
+                Add
+              </Button>
+            </Stack>
           </Box>
         </Modal>
         <div className="ag-theme-quartz" style={{ height: 750, width: 1400 }}>

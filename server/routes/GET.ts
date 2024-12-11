@@ -134,11 +134,8 @@ routerGet.post(
 
     const value = await CategoryItems.getCategoryItemValues(catId as number);
 
-    console.log("value from cat", value[0], value[1])
-
     res.status(200).json({
-     key: value[0],
-     value: value[1]
+      values: value
     });
 });
 

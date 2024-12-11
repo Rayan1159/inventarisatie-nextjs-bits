@@ -61,26 +61,18 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
 
     static async getCategoryItemValues(catid: number) {
         const categoryName = await Category.getCategoryNameById(catid);
-        const value = await CategoryItems.findOne({
+        const value = await CategoryItems.findAll({
             where: {
                 category_id: catid
             }
         })
 
-        console.log("value", value)
-
-        // if (value == null) {
-        //     throw new Error("no value found for category item");
-        // }
-
-        // if (value?.item_value === null) {
-        //     console.warn("no value found for category item");
-        // }
-
-        return [
-            value?.item_name,
-            value?.item_value
-        ]
+        return value.map((item) => {
+            return {
+                key: item.item_name,
+                value: item.item_value
+            }
+        })
     }
 
     static async setCategoryItemValue(catid: number, item: string, value: string) {
