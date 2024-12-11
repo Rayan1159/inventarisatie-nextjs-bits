@@ -121,25 +121,18 @@ export default function Dashboard() {
             field: value,
           },
         ]);
-
-        colDefs.push({
-          field: value,
-        });
-
-        const values = categoryValues.values;
-        // Object.keys(values).forEach((key, index) => {
-       
-        // });
-
-        setRowData((rowData) => [
-          ...rowData,
-          {
-            [values[key].key]: values[key].value
-          },
-        ]);
       });
-
     }
+
+    const newRow = Object.keys(categoryValues.values).reduce((acc, value) => {
+      acc[value] = categoryValues.values[value];
+      return acc;
+    }, {});
+    
+    setRowData((prevRowData) => [...prevRowData, newRow]);
+
+    setInventoryForm((prevForm) => [...prevForm, {placeholder: ""}]);
+
     assignInputs();
     setCategory(category);
   };
@@ -214,6 +207,8 @@ export default function Dashboard() {
     setInventoryForm((prevForm) =>
       prevForm.map((field) => ({ ...field, placeholder: "" }))
     );
+
+    console.log(inventoryForm)
   };
 
   const addColumnToCategory = () => {
@@ -312,8 +307,7 @@ export default function Dashboard() {
             >
               New Inventory Entry for category {activeCategory}
             </Typography>
-            {isCategoriesSet() && activeCategory !== "" ? (
-              <Grid container spacing={2}>
+            <Grid container spacing={2}>
                 {inventoryForm.map((field, index) => (
                   <Grid key={index}>
                     <TextField
@@ -326,9 +320,6 @@ export default function Dashboard() {
                   </Grid>
                 ))}
               </Grid>
-            ) : (
-              <span>Geen categorieën gevonden of geselecteerd</span>
-            )}
             <Stack
               direction="row"
               spacing={2}
