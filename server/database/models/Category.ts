@@ -53,13 +53,22 @@ export class Category extends Model<CategoryAttr, CategoryCreationAttr> {
         });
     }
 
+    static async getCategoryNameById(id: number) {
+        const category: Category = await Category.findOne({
+            where: {
+                id: id
+            }
+        }) as Category;
+        return category.name;
+    }
+
     static async getCategoryId(category: string) {
         const categoryId: Category = await Category.findOne({
             where: {
                 name: category
-                }
+            }
             }) as Category;
-            console.log(categoryId);
+            console.log("categoryid", categoryId.id);
         return categoryId.id;
     } 
 }

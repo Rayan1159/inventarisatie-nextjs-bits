@@ -1,15 +1,18 @@
 import { DataTypes, Model, Sequelize} from 'sequelize';
+import {Category} from "./Category";
 
 export interface CategoryItemsAttributes {
     id?: number;
     category_id: number;
     item_name: string;
+    item_value?: string;
 }
 
 export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsCreationAttributes> implements CategoryItemsAttributes {
     id!: number;
     category_id: number;
     item_name: string;
+    item_value?: string;
 
     static initModel(sequelize: Sequelize) {
         CategoryItems.init({
@@ -20,6 +23,10 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
             item_name: {
                 type: DataTypes.STRING,
                 allowNull: false
+            },
+            item_value: {
+                type: DataTypes.STRING,
+                allowNull: true
             }
         }, {
             sequelize,
@@ -51,5 +58,38 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
             category_id: id
         })
     }
+
+    static async getCategoryItemValues(catid: number) {
+        const categoryName = await Category.getCategoryNameById(catid);
+        const value = await CategoryItems.findOne({
+            where: {
+                category_id: catid
+            }
+        })
+
+        // if (value == null) {
+        //     throw new Error("no value found for category item");
+        // }
+
+        // if (value?.item_value === null) {
+        //     console.warn("no value found for category item");
+        // }
+
+        return [
+            categoryName,
+            value?.item_value
+        ]
+    }
+
+    static async setCategoryItemValue(catid: number, value: string) {
+        await CategoryItems.update({
+            item_value: value
+        }, {
+            where: {
+                category_id: catid
+            }
+        })
+    }
 }
+
 

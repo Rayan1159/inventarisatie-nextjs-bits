@@ -13,10 +13,7 @@ import {
 } from "@mui/material";
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { categoryExists, setNewCategory } from "@/app/requests/inventory";
-import {
-  getCategoryInventoryKeys,
-  setCategoryItems,
-} from "@/app/fn/category";
+import { getCategoryInventoryKeys, getCategoryValues, setCategoryItems} from "@/app/fn/category";
 import { redirect } from "next/navigation";
 import "@/app/css/global.css";
 import "@/app/css/Dashboard.css";
@@ -87,12 +84,7 @@ export default function Dashboard() {
   });
 
   const isCategoriesSet = () => {
-    console.log(colDefs.length);
     return colDefs.length > 0;
-  };
-
-  const reloadPage = () => {
-    router.refresh();
   };
 
   const cleanGridData = () => {
@@ -108,6 +100,7 @@ export default function Dashboard() {
 
   const reloadGrid = async (category: string) => {
     const data = await categoryExists(category);
+    const categoryValues = await getCategoryValues(category);
     const response = await data.json();
 
     if (category !== activeCategory) {
@@ -124,6 +117,8 @@ export default function Dashboard() {
           },
         ]);
 
+        console.log(categoryValues);
+
         colDefs.push({
           field: value,
         });
@@ -131,11 +126,12 @@ export default function Dashboard() {
         setRowData((row) => [
           ...rowData,
           {
-            [value]: "",
+            // ...categoryValues
           },
         ]);
       });
     }
+    console.log(categoryValues);
     assignInputs();
     setCategory(category);
   };
@@ -193,14 +189,24 @@ export default function Dashboard() {
   };
 
   const addCategoryItem = () => {
-    const inventoryItems = inventoryForm.map((item) => {
-      return {
-        item_name: item.name,
-      };
-    });
-    setCategoryItems(activeCategory, {
-      ...inventoryItems,
-    });
+    if (!activeCategory) {
+      alert("No category is selected.");
+      return;
+    }
+
+    const newRow = inventoryForm.reduce((acc, item) => {
+      acc[item.name] = item.placeholder || ""; 
+      return acc;
+    }, {} as Record<string, any>);
+  
+
+    setRowData((prevRowData) => [...prevRowData, newRow]);
+
+    alert("New inventory entry added successfully.");
+    
+    setInventoryForm((prevForm) =>
+      prevForm.map((field) => ({ ...field, placeholder: "" }))
+    );
   };
 
   const addColumnToCategory = () => {
@@ -360,7 +366,7 @@ export default function Dashboard() {
                 onChange={categoryOnChange}
               />
 
-              <Button variant="contained" onClick={addCategoryItem}>
+              <Button variant="contained" onClick={addNewCategory}>
                 Add
               </Button>
             </Stack>
@@ -381,8 +387,7 @@ export default function Dashboard() {
             >
               Nieuw column toevoegen aan categorie
             </Typography>
-            {isCategoriesSet() && activeCategory !== "" ? (
-              <Stack spacing={2}>
+            <Stack spacing={2}>
                 <TextField
                   fullWidth
                   label="Column"
@@ -394,9 +399,6 @@ export default function Dashboard() {
                   Add
                 </Button>
               </Stack>
-            ) : (
-              <span>Geen categorieën gevonden of geselecteerd</span>
-            )}
           </Box>
         </Modal>
         <div className="ag-theme-quartz" style={{ height: 750, width: 1400 }}>

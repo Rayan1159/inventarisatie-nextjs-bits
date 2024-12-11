@@ -59,7 +59,7 @@ export const getCategoryInventoryKeys = async (category: string) => {
     return response.json();
 }
 
-export const setCategoryItems = async (category: string, items: Record<string, any>) => {
+export const setCategoryColumns = async (category: string, items: Record<string, any>) => {
     const response = await fetch(`http://localhost:8000/database/inventory/categories/items/update`, {
         method: "POST",
         headers: {
@@ -70,7 +70,7 @@ export const setCategoryItems = async (category: string, items: Record<string, a
     return response.json();
 }   
 
-export const addColumn = async (category: string, column: string) => {
+export const addColumnValue = async (category: string, column: string) => {
     const response = await fetch(`http://localhost:8000/database/inventory/categories/column/add`, {
         method: "POST",
         headers: {
@@ -80,3 +80,25 @@ export const addColumn = async (category: string, column: string) => {
     });
     return response.json();
 }
+
+export const getCategoryValues = async (category: string) => {
+    const response = await fetch(`http://localhost:8000/database/inventory/categories/values`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({category})
+    });
+    return response.json();
+}
+
+export const setCategoryItems = async (category: string, items: Record<string, any>) => {
+    const response = await fetch(`http://localhost:8000/database/inventory/categories/items/update`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({category, items})
+    });
+    return response.json();
+}   
