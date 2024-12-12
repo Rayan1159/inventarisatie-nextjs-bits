@@ -88,10 +88,6 @@ export default function Dashboard() {
     },
   });
 
-  const isCategoriesSet = () => {
-    return colDefs.length > 0;
-  };
-
   const cleanGridData = () => {
     setColDefs((colDefs) => []);
     rowData?.forEach((row) =>
@@ -113,14 +109,26 @@ export default function Dashboard() {
     }
 
     if (response.exists === true) {
-      const inventoryKeys: string[] = await getCategoryInventoryKeys(category);
-      inventoryKeys.forEach((value, key) => {
+      const inventoryKeys: string[] = await getCategoryInventoryKeys(
+        category
+      ).finally(() => console.log("fetched keys"));
+
+      inventoryKeys.forEach((value, index) => {
         setColDefs((colDefs) => [
           ...colDefs,
           {
             field: value,
           },
         ]);
+      })
+
+      inventoryKeys.forEach((value, key) => {
+        colDefs.push([
+          {
+            field: value,
+          },
+        ]);
+        assignInputs(colDefs);
       });
     }
 
@@ -128,12 +136,8 @@ export default function Dashboard() {
       acc[value] = categoryValues.values[value];
       return acc;
     }, {});
-    
+
     setRowData((prevRowData) => [...prevRowData, newRow]);
-
-    setInventoryForm((prevForm) => [...prevForm, {placeholder: ""}]);
-
-    assignInputs();
     setCategory(category);
   };
 
@@ -161,13 +165,13 @@ export default function Dashboard() {
     flex: 1,
   };
 
-  const assignInputs = () => {
-    const newInputFields = colDefs.map((col) => ({
-      placeholder: col.field,
-      name: col.field,
-    }));
-
-    setInventoryForm((form) => [...form, ...newInputFields]);
+  const assignInputs = (categoryValues: any[]) => {
+    categoryValues.forEach((value, index) => {
+      setInventoryForm([{
+        placeholder: value[index].field,
+        name: value[index].field
+      }])
+    })
     return inventoryForm;
   };
 
@@ -207,8 +211,6 @@ export default function Dashboard() {
     setInventoryForm((prevForm) =>
       prevForm.map((field) => ({ ...field, placeholder: "" }))
     );
-
-    console.log(inventoryForm)
   };
 
   const addColumnToCategory = () => {
@@ -308,18 +310,18 @@ export default function Dashboard() {
               New Inventory Entry for category {activeCategory}
             </Typography>
             <Grid container spacing={2}>
-                {inventoryForm.map((field, index) => (
-                  <Grid key={index}>
-                    <TextField
-                      fullWidth
-                      label={field.placeholder}
-                      name={field.name}
-                      onChange={handleInventoryInputChange}
-                      variant="outlined"
-                    />
-                  </Grid>
-                ))}
-              </Grid>
+              {inventoryForm.map((field, index) => (
+                <Grid key={index}>
+                  <TextField
+                    fullWidth
+                    label={field.placeholder}
+                    name={field.name}
+                    onChange={handleInventoryInputChange}
+                    variant="outlined"
+                  />
+                </Grid>
+              ))}
+            </Grid>
             <Stack
               direction="row"
               spacing={2}
