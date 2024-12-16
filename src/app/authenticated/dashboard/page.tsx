@@ -149,7 +149,6 @@ export default function Dashboard() {
     }, {});
     
     setRowData((prevRowData) => [...prevRowData, newRow]);
-
     setCategory(category);
   };
 
@@ -430,6 +429,9 @@ export default function Dashboard() {
           ) : null}
           <div className="grid-res">
             <AgGridReact
+              onRowDoubleClicked={(e) => {
+                const element: HTMLDivElement = e.event.target;
+              }}
               rowData={rowData}
               columnDefs={colDefs as any}
               defaultColDef={defaultColDef}

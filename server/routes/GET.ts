@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { Router } from "express";
 import { Inventory } from "../database/models/Inventory";
 import sequelize from "../database/sequelize";
-import * as fs from "fs";
-import * as path from "path";
 import Category from "../database/models/Category";
 import { CategoryItems } from "../database/models/CategoryItems";
 
