@@ -13,10 +13,6 @@ CategoryItems.initModel(sequelize);
 
 const routerGet = Router();
 
-const BASE_DIR = __dirname;
-const CATEGORY_JSON = path.join(BASE_DIR, "../data", "categories.json");
-const CATEGORY_DATA = JSON.parse(fs.readFileSync(CATEGORY_JSON, "utf-8"));
-
 routerGet.post(
   "/inventory",
   async (req: Request, res: Response, _next: NextFunction) => {
@@ -30,7 +26,9 @@ routerGet.post(
   async (req, res, next) => {
     const keys = await Category.getCategories();
     if (keys) res.status(200).json(keys);
-});
+  } 
+  
+)
 
 routerGet.get(
   "/inventory/categories/all",
@@ -63,7 +61,6 @@ routerGet.post('/inventory/categories/items/update', async (req, res, next) => {
       message: "Category items updated successfully.",
     });
   } catch (error) {
-    console.error('Error updating category items:', error);
     res.status(500).json({
       status: 500,
       error: "An error occurred while updating category items.",

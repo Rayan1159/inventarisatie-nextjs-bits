@@ -99,6 +99,18 @@ export default function Dashboard() {
     setCategoryDataForm(event.target.value);
   };
 
+  const assignInputs = (categoryValues: any[]) => {
+    console.log(categoryValues);
+    const updatedInventoryForm = categoryValues.flat().map((value) => {
+      return {
+        name: value.field,
+        placeholder: value.field
+      }
+    });
+    setInventoryForm((form) => [...form, ...updatedInventoryForm]);
+    return inventoryForm;
+  };
+
   const reloadGrid = async (category: string) => {
     const data = await categoryExists(category);
     const categoryValues = await getCategoryValues(category);
@@ -120,9 +132,7 @@ export default function Dashboard() {
             field: value,
           },
         ]);
-      })
 
-      inventoryKeys.forEach((value, key) => {
         colDefs.push([
           {
             field: value,
@@ -133,11 +143,13 @@ export default function Dashboard() {
     }
 
     const newRow = Object.keys(categoryValues.values).reduce((acc, value) => {
-      acc[value] = categoryValues.values[value];
+      const entry = categoryValues.values[value];
+      acc[entry.key] = entry.value;
       return acc;
     }, {});
-
+    
     setRowData((prevRowData) => [...prevRowData, newRow]);
+
     setCategory(category);
   };
 
@@ -163,16 +175,6 @@ export default function Dashboard() {
 
   const defaultColDef = {
     flex: 1,
-  };
-
-  const assignInputs = (categoryValues: any[]) => {
-    categoryValues.forEach((value, index) => {
-      setInventoryForm([{
-        placeholder: value[index].field,
-        name: value[index].field
-      }])
-    })
-    return inventoryForm;
   };
 
   const categoryOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
