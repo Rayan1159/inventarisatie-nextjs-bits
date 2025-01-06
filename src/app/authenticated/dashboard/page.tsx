@@ -174,6 +174,17 @@ export default function Dashboard() {
 
   const defaultColDef = {
     flex: 1,
+    editable: true,
+    onCellValueChanged: (params: any) => {
+      if (!hasPermission()) {
+        alert("Je hebt geen permissie om items te bewerken");
+        return;
+      }
+      const { data, colDef, newValue } = params;
+      if (colDef && colDef.field) {
+        addItemValue(activeCategory, colDef.field, newValue);
+      }
+    }
   };
 
   const categoryOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -429,8 +440,11 @@ export default function Dashboard() {
           ) : null}
           <div className="grid-res">
             <AgGridReact
-              onRowDoubleClicked={(e) => {
-                const element: HTMLDivElement = e.event.target;
+              onCellDoubleClicked={(params) => {
+                if (!hasPermission()) {
+                  alert("Je hebt geen permissie om items te bewerken");
+                  return;
+                }
               }}
               rowData={rowData}
               columnDefs={colDefs as any}
