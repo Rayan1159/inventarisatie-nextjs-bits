@@ -39,6 +39,17 @@ export default function Dashboard() {
   const [categoryData, setCategoryDataForm] = React.useState<string>("");
 
   const router = useRouter();
+  const [gridApi, setGridApi] = React.useState(null);
+
+  const handleGridReady = (params: any) => {
+    setGridApi(params.api);
+  };
+
+  const refreshGrid = () => {
+    if (gridApi) {
+      gridApi.refreshCells();
+    }
+  };
 
   const inventoryInterfaceStyle = {
     display: "flex",
@@ -125,21 +136,9 @@ export default function Dashboard() {
         category
       ).finally(() => console.log("fetched keys"));
 
-      inventoryKeys.forEach((value, index) => {
-        setColDefs((colDefs) => [
-          ...colDefs,
-          {
-            field: value,
-          },
-        ]);
-
-        colDefs.push([
-          {
-            field: value,
-          },
-        ]);
-        assignInputs(colDefs);
-      });
+      const newColDefs = inventoryKeys.map(value => ({ field: value }));
+      setColDefs(newColDefs);
+      assignInputs(newColDefs);
     }
 
     const newRow = Object.keys(categoryValues.values).reduce((acc, value) => {
@@ -148,7 +147,7 @@ export default function Dashboard() {
       return acc;
     }, {});
     
-    setRowData((prevRowData) => [...prevRowData, newRow]);
+    setRowData([newRow]);
     setCategory(category);
   };
 
@@ -183,6 +182,7 @@ export default function Dashboard() {
       const { data, colDef, newValue } = params;
       if (colDef && colDef.field) {
         addItemValue(activeCategory, colDef.field, newValue);
+        refreshGrid();
       }
     }
   };
@@ -225,12 +225,12 @@ export default function Dashboard() {
     );
   };
 
-  const addColumnToCategory = () => {
+  const addColumnToCategory = async () => {
     if (!activeCategory) return;
-    setCategoryItems(activeCategory, {
+    await setCategoryItems(activeCategory, {
       item_name: categoryData,
     });
-    router.refresh();
+    reloadGrid(activeCategory);
   };
 
   const handleInventoryInputChange = (
@@ -440,10 +440,16 @@ export default function Dashboard() {
           ) : null}
           <div className="grid-res">
             <AgGridReact
-              onCellDoubleClicked={(params) => {
+              onGridReady={handleGridReady}
+              onCellValueChanged={(params) => {
                 if (!hasPermission()) {
                   alert("Je hebt geen permissie om items te bewerken");
                   return;
+                }
+                const { data, colDef, newValue } = params;
+                if (colDef && colDef.field) {
+                  addItemValue(activeCategory, colDef.field, newValue);
+                  refreshGrid();
                 }
               }}
               rowData={rowData}
