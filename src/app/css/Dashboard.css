@@ -148,3 +148,70 @@ input { margin-bottom: 2rem; }
         padding-bottom: 5px;
     }
 }
+
+@media only screen and (max-width: 768px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    .dashboard-wrapper {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .dashboard-workfield {
+        width: 100%;
+        height: auto;
+        padding: 1rem;
+    }
+
+    .workfield-header {
+        width: 100%;
+        position: relative;
+        top: 0;
+    }
+
+    .workfield-body {
+        padding-top: 1rem;
+    }
+
+    .inventory-button-group {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .open-new-category,
+    .open-interface {
+        width: 100%;
+        font-size: 1rem;
+        height: auto;
+    }
+
+    .grid-res {
+        width: 100%;
+        height: 60vh;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .dashboard-container {
+        padding: 0.5rem;
+    }
+
+    .dashboard-workfield {
+        padding: 0.5rem;
+    }
+
+    .workfield-header {
+        font-size: 1rem;
+    }
+
+    .open-new-category,
+    .open-interface {
+        font-size: 0.9rem;
+    }
+
+    .grid-res {
+        height: 50vh;
+    }
+}
