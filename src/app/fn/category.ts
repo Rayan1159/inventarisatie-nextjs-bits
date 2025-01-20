@@ -113,3 +113,13 @@ export const addItemValue = async (category: string, item: string, value: string
     });
     return response.json();
 }
+
+export const deleteCategoryItem = async (category: string, item: string) => {
+    return fetch(`http://localhost:8000/database/inventory/categories/values/delete`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ category, item })
+    }).then(r => r.json());
+}

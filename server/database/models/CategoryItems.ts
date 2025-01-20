@@ -86,6 +86,17 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
 
         console.log("category item value updated successfully for", item, "with value", value);
     }
+
+    static async deleteCategoryItem(catid: number, itemKey: string) {
+        console.log(itemKey);
+        await CategoryItems.destroy({
+            where: {
+                category_id: catid,
+                item_name: itemKey
+            }
+        });
+        console.log("deleted item with name", itemKey, "for category id", catid);
+    }
 }
 
 

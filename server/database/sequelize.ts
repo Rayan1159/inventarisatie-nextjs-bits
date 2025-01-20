@@ -5,8 +5,8 @@ const p = pino.default({
   level: "info",
 });
 
-const sequelize = new database("bits", "bits", "bits", {
-  host: "localhost",
+const sequelize = new database("bits", "bits", "welkom123", {
+host: "localhost",
   port: 3306,
   dialect: "mysql",
   logging: p.info.bind(p),
@@ -20,5 +20,6 @@ sequelize
   .catch((err) => {
     console.log(err);
   });
+
 
 export default sequelize;

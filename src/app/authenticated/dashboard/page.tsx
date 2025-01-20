@@ -18,6 +18,7 @@ import {
   getCategoryInventoryKeys,
   getCategoryValues,
   setCategoryItems,
+  deleteCategoryItem,
 } from "@/app/fn/category";
 import { redirect } from "next/navigation";
 import "@/app/css/global.css";
@@ -171,6 +172,37 @@ export default function Dashboard() {
       },
     });
 
+    const handleDeleteRow = (rowIndex: number) => {
+      if (!hasPermission()) {
+          alert("Je hebt geen permissie om items te verwijderen");
+          return;
+      }
+  
+      const row = rowData[rowIndex];
+      const itemKeys = Object.keys(row);
+  
+      Promise.all(itemKeys.map(itemKey => 
+          deleteCategoryItem(activeCategory, itemKey)
+      )).then((data) => {
+          console.log('sending delete request', data);
+          setRowData((prevRowData) =>
+              prevRowData.filter((_, index) => index !== rowIndex)
+          );
+      });
+  };
+
+  const deleteButtonRenderer = (params: any) => {
+    return (
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => handleDeleteRow(params.node.rowIndex)}
+      >
+        Delete
+      </Button>
+    );
+  };
+
   const defaultColDef = {
     flex: 1,
     editable: true,
@@ -184,7 +216,7 @@ export default function Dashboard() {
         addItemValue(activeCategory, colDef.field, newValue);
         refreshGrid();
       }
-    }
+    },
   };
 
   const categoryOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -246,20 +278,6 @@ export default function Dashboard() {
 
   const handleInventorySubmit = (event: React.FormEvent) => {
     event.preventDefault();
-
-    // setInventoryForm({
-    //   name: '',
-    //   description: '',
-    //   additional: '',
-    //   place: '',
-    //   processor: '',
-    //   ram: '',
-    //   drive: '',
-    //   powerCable: '',
-    //   needsAdditional: '',
-    //   recentActions: '',
-    //   requiredAction: ''
-    // });
 
     handleClose("modalOne")();
   };
@@ -453,7 +471,20 @@ export default function Dashboard() {
                 }
               }}
               rowData={rowData}
-              columnDefs={colDefs as any}
+              columnDefs={
+                colDefs.length > 0
+                  ? [
+                      ...colDefs,
+                      {
+                        headerName: "Actions",
+                        field: "actions",
+                        cellRenderer: deleteButtonRenderer,
+                        width: 150,
+                        pinned: "right",
+                      },
+                    ]
+                  : colDefs
+              }
               defaultColDef={defaultColDef}
               pagination={true}
               paginationPageSize={15}

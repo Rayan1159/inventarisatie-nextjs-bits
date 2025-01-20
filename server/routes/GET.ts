@@ -78,6 +78,8 @@ routerGet.post(
   }
 )
 
+
+
 routerGet.post(
   "/inventory/categories/content/keys",
   async (req, res, next) => {
@@ -106,6 +108,20 @@ routerGet.post(
               exists: true
           })
       }
+  }
+)
+
+routerGet.post(
+  '/inventory/categories/values/delete',
+  async (req, res, next) => {
+    const { category, item } = req.body;
+    const catId = await Category.getCategoryId(category);
+    console.log(catId, category);
+    await CategoryItems.deleteCategoryItem(catId as number, item);
+    res.status(200).json({
+      status: 200,
+      message: "Category item deleted successfully."
+    });
   }
 )
 
