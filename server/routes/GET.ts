@@ -41,8 +41,6 @@ routerGet.post('/inventory/categories/items/update', async (req, res, next) => {
       item_name: string
      } } = req.body;
 
-     console.log(items.item_name);
-
     if (!category) {
       return res.status(400).json({ error: "No category provided" });
     }
@@ -77,8 +75,6 @@ routerGet.post(
     res.status(200);
   }
 )
-
-
 
 routerGet.post(
   "/inventory/categories/content/keys",
@@ -154,15 +150,33 @@ routerGet.post(
   "/inventory/categories/values/update", 
   async (req, res, next) => {
 
-    const { category, item, value } = req.body;
+    const { category, item, value, id} = req.body;
     const catId = await Category.getCategoryId(category);
 
-    await CategoryItems.setCategoryItemValue(catId as number, item,  value);
+    await CategoryItems.setCategoryItemValue(catId as number, item, value);
 
     res.status(200).json({
      status: 200,
      message: "Category item value updated successfully."
     });
+  }
+)
+
+routerGet.post(
+  "/entry/create", async (req, res, next) => {
+    try {
+      const { category } = req.body;
+      const cat = await Category.findOne({ where: { name: category } });
+      
+      if (!cat) {
+          return res.status(404).json({ error: 'Category not found' });
+      }
+
+      const entryId = await CategoryItems.createNewEntry(cat.category_id);
+      res.json({ id: entryId });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
   }
 )
 

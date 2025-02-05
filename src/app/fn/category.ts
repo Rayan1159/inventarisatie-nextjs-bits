@@ -103,13 +103,13 @@ export const setCategoryItems = async (category: string, items: Record<string, a
     return response.json();
 }   
 
-export const addItemValue = async (category: string, item: string, value: string) => {
+export const addItemValue = async (category: string, item: string, value: string, id: number) => {
     const response = await fetch(`http://localhost:8000/database/inventory/categories/values/update`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({category, item, value})
+        body: JSON.stringify({category, item, value, id})
     });
     return response.json();
 }
@@ -122,4 +122,15 @@ export const deleteCategoryItem = async (category: string, item: string) => {
         },
         body: JSON.stringify({ category, item })
     }).then(r => r.json());
+}
+
+export const createNewEntry = async (category: string) => {
+    const response = await fetch(`http://localhost:8000/database/inventory/categories/entry/create`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({category})
+    });
+    return response.json();
 }

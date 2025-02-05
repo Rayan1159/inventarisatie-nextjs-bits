@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
+  env: {  
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
+  },
 };
 
 export default nextConfig;

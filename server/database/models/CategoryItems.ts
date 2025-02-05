@@ -3,6 +3,7 @@ import {Category} from "./Category";
 
 export interface CategoryItemsAttributes {
     id?: number;
+    entry_id?: number;
     category_id: number;
     item_name: string;
     item_value?: string;
@@ -10,6 +11,8 @@ export interface CategoryItemsAttributes {
 
 export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsCreationAttributes> implements CategoryItemsAttributes {
     id!: number;
+    item_id: number;
+    entry_id: number;
     category_id: number;
     item_name: string;
     item_value?: string;
@@ -26,6 +29,10 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
             },
             item_value: {
                 type: DataTypes.STRING,
+                allowNull: true
+            },
+            entry_id: {
+                type: DataTypes.INTEGER,
                 allowNull: true
             }
         }, {
@@ -59,32 +66,46 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
         })
     }
 
+
     static async getCategoryItemValues(catid: number) {
-        const categoryName = await Category.getCategoryNameById(catid);
-        const value = await CategoryItems.findAll({
+        const items = await CategoryItems.findAll({
             where: {
                 category_id: catid
             }
-        })
-
-        return value.map((item) => {
-            return {
+        });
+    
+        const entriesMap = new Map<number, any>();
+        items.forEach((item) => {
+            const entryId = item.entry_id; 
+            if (!entriesMap.has(entryId)) {
+                entriesMap.set(entryId, {
+                    id: entryId,
+                    values: []
+                });
+            }
+            entriesMap.get(entryId).values.push({
                 key: item.item_name,
                 value: item.item_value
-            }
-        })
+            });
+        });
+    
+        return {
+            values: Array.from(entriesMap.values())
+        };
     }
 
-    static async setCategoryItemValue(catid: number, item: string, value: string) {
+
+    static async setCategoryItemValue(catid: number, item: string, value: string, entryId: number) {
         await CategoryItems.update({
-            item_value: value
+            item_value: value,
+            entry_id: entryId
         }, {
             where: {
-                item_name: item
+                category_id: catid,
+                item_name: item,
+                entry_id: entryId
             }
-        })
-
-        console.log("category item value updated successfully for", item, "with value", value);
+        });
     }
 
     static async deleteCategoryItem(catid: number, itemKey: string) {
@@ -95,7 +116,28 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
                 item_name: itemKey
             }
         });
+
         console.log("deleted item with name", itemKey, "for category id", catid);
+    }
+
+    static async createNewEntry(catid: number) {
+        const entry = await CategoryItems.create({
+            category_id: catid,
+            item_name: '__entry__', // Special marker for entry ID
+            item_value: '1',
+            entry_id: null
+        });
+        
+        // Get the auto-generated ID
+        const entryId = entry.id;
+        
+        // Update the entry_id with its own ID
+        await CategoryItems.update(
+            { entry_id: entryId },
+            { where: { id: entryId } }
+        );
+        
+        return entryId;
     }
 }
 

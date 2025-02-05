@@ -2,7 +2,6 @@
 
 import React from "react";
 import { redirect } from "next/navigation";
-
 export function AuthCard() {
   const [userData, setUserData] = React.useState<{
     username: string;
@@ -26,7 +25,9 @@ export function AuthCard() {
       return;
     }
 
-    if (username === "admin" && password === "admin") {
+    console.log(process.env.ADMIN_PASSWORD);
+
+    if (username === "admin" && password === process.env.ADMIN_PASSWORD) {
       const user = {
         username: "admin",
         permissionLevel: 1,

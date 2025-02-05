@@ -26,6 +26,8 @@ import "@/app/css/Dashboard.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-community/styles/ag-grid.css";
 import { useRouter } from "next/navigation";
+import { createNewEntry } from "@/app/fn/category";
+
 
 export default function Dashboard() {
   const [activeCategory, setCategory] = React.useState("");
@@ -37,6 +39,7 @@ export default function Dashboard() {
   const [inventoryForm, setInventoryForm] = React.useState<
     Record<string, any>[]
   >([]);
+
   const [categoryData, setCategoryDataForm] = React.useState<string>("");
 
   const router = useRouter();
@@ -123,34 +126,56 @@ export default function Dashboard() {
     return inventoryForm;
   };
 
+
   const reloadGrid = async (category: string) => {
     const data = await categoryExists(category);
     const categoryValues = await getCategoryValues(category);
     const response = await data.json();
-
+  
     if (category !== activeCategory) {
       cleanGridData();
     }
-
+  
     if (response.exists === true) {
-      const inventoryKeys: string[] = await getCategoryInventoryKeys(
-        category
-      ).finally(() => console.log("fetched keys"));
-
-      const newColDefs = inventoryKeys.map(value => ({ field: value }));
+      const inventoryKeys: string[] = await getCategoryInventoryKeys(category);
+      // Add ID column first, followed by other columns
+      const newColDefs = [
+        { 
+          field: 'id', 
+          headerName: 'ID', 
+          editable: false, // Prevent editing of IDs
+          filter: true,
+          width: 100 
+        },
+        ...inventoryKeys.map(value => ({ 
+          field: value, 
+          editable: hasPermission() // Only editable with permissions
+        }))
+      ];
       setColDefs(newColDefs);
       assignInputs(newColDefs);
     }
-
-    const newRow = Object.keys(categoryValues.values).reduce((acc, value) => {
-      const entry = categoryValues.values[value];
-      acc[entry.key] = entry.value;
-      return acc;
-    }, {});
-    
-    setRowData([newRow]);
+  
+    if (categoryValues.values.length === 0) {
+      setRowData([]);
+      return;
+    }
+  
+    // Map data with ID preservation
+    const rows = categoryValues.values.values.map((entry: any) => {
+      const row: Record<string, any> = { id: entry.id }; // Preserve ID
+      
+      entry.values.forEach((item: any) => {
+        row[item.key] = item.value;
+      });
+      
+      return row;
+    });
+  
+    setRowData(rows);
     setCategory(category);
   };
+  
 
   const handleCallback = (childData: any) => {
     reloadGrid(childData);
@@ -173,21 +198,15 @@ export default function Dashboard() {
     });
 
     const handleDeleteRow = (rowIndex: number) => {
-      if (!hasPermission()) {
-          alert("Je hebt geen permissie om items te verwijderen");
-          return;
-      }
+      const rowToDelete = rowData[rowIndex];
+      if (!rowToDelete?.id) return;
   
-      const row = rowData[rowIndex];
-      const itemKeys = Object.keys(row);
-  
-      Promise.all(itemKeys.map(itemKey => 
-          deleteCategoryItem(activeCategory, itemKey)
-      )).then((data) => {
-          console.log('sending delete request', data);
-          setRowData((prevRowData) =>
-              prevRowData.filter((_, index) => index !== rowIndex)
-          );
+      deleteCategoryItem(activeCategory, rowToDelete.id).then(() => {
+          // Remove from grid
+          setRowData(prev => prev.filter(row => row.id !== rowToDelete.id));
+          
+          // Refresh data from server
+          reloadGrid(activeCategory);
       });
   };
 
@@ -237,24 +256,32 @@ export default function Dashboard() {
     }
   };
 
-  const addCategoryItem = () => {
-    if (!activeCategory) {
-      alert("No category is selected.");
-      return;
-    }
 
-    const newRow = inventoryForm.reduce((acc, item) => {
-      acc[item.name] = item.placeholder || "";
-
-      addItemValue(activeCategory, item.name, item.placeholder);
-      return acc;
-    }, {} as Record<string, any>);
-
-    setRowData((prevRowData) => [...prevRowData, newRow]);
-
-    setInventoryForm((prevForm) =>
-      prevForm.map((field) => ({ ...field, placeholder: "" }))
-    );
+  const addCategoryItem = async () => {
+      if (!activeCategory) {
+          alert("No category is selected.");
+          return;
+      }
+  
+      // Create new entry and get server-generated ID
+      const newEntry = await createNewEntry(activeCategory);
+      const entryId = newEntry.id;
+  
+      // Create new row with server-generated ID
+      const newRow = {
+          id: entryId,
+          ...inventoryForm.reduce((acc, item) => {
+              acc[item.name] = item.placeholder || "";
+              // Update each field with the correct entry ID
+              addItemValue(activeCategory, item.name, item.placeholder, entryId);
+              return acc;
+          }, {} as Record<string, any>)
+      };
+  
+      setRowData((prevRowData) => [...prevRowData, newRow]);
+      setInventoryForm((prevForm) =>
+          prevForm.map((field) => ({ ...field, placeholder: "" }))
+      );
   };
 
   const addColumnToCategory = async () => {
