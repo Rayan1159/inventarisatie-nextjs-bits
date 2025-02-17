@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
-import { redirect } from "next/navigation";
+import { redirect } from 'next/navigation';
+import React from 'react';
+
 export function AuthCard() {
   const [userData, setUserData] = React.useState<{
     username: string;
@@ -40,7 +41,7 @@ export function AuthCard() {
       redirect("/authenticated/dashboard");
     }
 
-    if (username === "guest" && password === "guest") {
+    if (username === "guest" && password === process.env.GUEST_PASSWORD) {
       const user = {
         username: "guest",
         permissionLevel: 0,

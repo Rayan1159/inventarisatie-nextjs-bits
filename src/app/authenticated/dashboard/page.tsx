@@ -1,33 +1,22 @@
 "use client";
 
-import React from "react";
-import Modal from "@mui/material/Modal";
-import { AgGridReact } from "ag-grid-react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Stack,
-  Grid2 as Grid,
-} from "@mui/material";
-import { DashboardHeader } from "@/app/components/DashboardHeader";
-import { categoryExists, setNewCategory } from "@/app/requests/inventory";
-import {
-  addItemValue,
-  getCategoryInventoryKeys,
-  getCategoryValues,
-  setCategoryItems,
-  deleteCategoryItem,
-} from "@/app/fn/category";
-import { redirect } from "next/navigation";
-import "@/app/css/global.css";
-import "@/app/css/Dashboard.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
-import "ag-grid-community/styles/ag-grid.css";
-import { useRouter } from "next/navigation";
-import { createNewEntry } from "@/app/fn/category";
+import '@/app/css/global.css';
+import '@/app/css/Dashboard.css';
+import 'ag-grid-community/styles/ag-theme-quartz.css';
+import 'ag-grid-community/styles/ag-grid.css';
 
+import { AgGridReact } from 'ag-grid-react';
+import { redirect, useRouter } from 'next/navigation';
+import React from 'react';
+
+import { DashboardHeader } from '@/app/components/DashboardHeader';
+import {
+    addItemValue, createNewEntry, deleteCategoryItem, getCategoryInventoryKeys, getCategoryValues,
+    setCategoryItems
+} from '@/app/fn/category';
+import { categoryExists, setNewCategory } from '@/app/requests/inventory';
+import { Box, Button, Grid2 as Stack, TextField, Typography } from '@mui/material';
+import Modal from '@mui/material/Modal';
 
 export default function Dashboard() {
   const [activeCategory, setCategory] = React.useState("");
@@ -39,10 +28,8 @@ export default function Dashboard() {
   const [inventoryForm, setInventoryForm] = React.useState<
     Record<string, any>[]
   >([]);
-
   const [categoryData, setCategoryDataForm] = React.useState<string>("");
 
-  const router = useRouter();
   const [gridApi, setGridApi] = React.useState(null);
 
   const handleGridReady = (params: any) => {
@@ -53,24 +40,6 @@ export default function Dashboard() {
     if (gridApi) {
       gridApi.refreshCells();
     }
-  };
-
-  const inventoryInterfaceStyle = {
-    display: "flex",
-    justifyContent: "center",
-    flexDirection: "column",
-    alignItems: "center",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 600,
-    height: 620,
-    background: "white",
-    border: "1px solid #000",
-    borderRadius: 5,
-    boxShadow: 24,
-    p: 4,
   };
 
   const categoryInterfaceStyle = {
@@ -171,8 +140,6 @@ export default function Dashboard() {
       
       return row;
     });
-  
-    setRowData(rows);
     setCategory(category);
   };
   
@@ -200,12 +167,9 @@ export default function Dashboard() {
     const handleDeleteRow = (rowIndex: number) => {
       const rowToDelete = rowData[rowIndex];
       if (!rowToDelete?.id) return;
-  
       deleteCategoryItem(activeCategory, rowToDelete.id).then(() => {
-          // Remove from grid
           setRowData(prev => prev.filter(row => row.id !== rowToDelete.id));
-          
-          // Refresh data from server
+   
           reloadGrid(activeCategory);
       });
   };
@@ -232,7 +196,7 @@ export default function Dashboard() {
       }
       const { data, colDef, newValue } = params;
       if (colDef && colDef.field) {
-        addItemValue(activeCategory, colDef.field, newValue);
+        addItemValue(activeCategory, colDef.field, newValue, data.id);
         refreshGrid();
       }
     },
@@ -257,56 +221,12 @@ export default function Dashboard() {
   };
 
 
-  const addCategoryItem = async () => {
-      if (!activeCategory) {
-          alert("No category is selected.");
-          return;
-      }
-  
-      // Create new entry and get server-generated ID
-      const newEntry = await createNewEntry(activeCategory);
-      const entryId = newEntry.id;
-  
-      // Create new row with server-generated ID
-      const newRow = {
-          id: entryId,
-          ...inventoryForm.reduce((acc, item) => {
-              acc[item.name] = item.placeholder || "";
-              // Update each field with the correct entry ID
-              addItemValue(activeCategory, item.name, item.placeholder, entryId);
-              return acc;
-          }, {} as Record<string, any>)
-      };
-  
-      setRowData((prevRowData) => [...prevRowData, newRow]);
-      setInventoryForm((prevForm) =>
-          prevForm.map((field) => ({ ...field, placeholder: "" }))
-      );
-  };
-
   const addColumnToCategory = async () => {
     if (!activeCategory) return;
     await setCategoryItems(activeCategory, {
       item_name: categoryData,
     });
     reloadGrid(activeCategory);
-  };
-
-  const handleInventoryInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, value } = event.target;
-    setInventoryForm((prevForm) =>
-      prevForm.map((item) =>
-        item.name === name ? { ...item, placeholder: value } : item
-      )
-    );
-  };
-
-  const handleInventorySubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    handleClose("modalOne")();
   };
 
   const hasPermission = () => {
@@ -337,6 +257,36 @@ export default function Dashboard() {
     document.title = "Inventarisatie - Dashboard";
   }, []);
 
+  const newRow = async () => {
+    if (activeCategory === "") {
+      alert('Selecteer een categorie');
+      return;
+    }
+
+    if (!gridApi) return console.log("gridapi not initialized");
+
+    inventoryForm.forEach((column) => {
+      console.log("Column name:", column.name);
+    });
+
+    const activeRows: any[] = [];
+    gridApi.forEachNode((node: any) => {
+      activeRows.push(node.data);
+    });
+
+    if (inventoryForm.length < 1) {
+      console.warn("Only the ID column exists.");
+      return;
+    }
+    
+    const newEntry = await createNewEntry(activeCategory);
+    const newRowEntry: Record<string, any> = { id: newEntry.id };
+    inventoryForm.forEach((item) => {
+      newRowEntry[item.name] = item.placeholder || "";
+    });
+    setRowData([...activeRows, newRowEntry]);
+  }
+
   return (
     <div className="container">
       <header className="global-header-wrapper">
@@ -347,57 +297,7 @@ export default function Dashboard() {
         />
       </header>
       <div className="dashboard-container">
-        <Modal
-          open={open.modalOne.isActive}
-          onClose={handleClose("modalOne")}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box
-            component="form"
-            sx={inventoryInterfaceStyle}
-            onSubmit={handleInventorySubmit}
-          >
-            <Typography
-              id="modal-modal-title"
-              variant="h6"
-              component="h2"
-              gutterBottom
-            >
-              New Inventory Entry for category {activeCategory}
-            </Typography>
-            <Grid container spacing={2}>
-              {inventoryForm.map((field, index) => (
-                <Grid key={index}>
-                  <TextField
-                    fullWidth
-                    label={field.placeholder}
-                    name={field.name}
-                    onChange={handleInventoryInputChange}
-                    variant="outlined"
-                  />
-                </Grid>
-              ))}
-            </Grid>
-            <Stack
-              direction="row"
-              spacing={2}
-              sx={{ mt: 3, justifyContent: "flex-end" }}
-            >
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                onClick={addCategoryItem}
-              >
-                Submit
-              </Button>
-              <Button variant="outlined" onClick={handleClose("modalOne")}>
-                Cancel
-              </Button>
-            </Stack>
-          </Box>
-        </Modal>
+
         <Modal
           open={open.modalTwo.isActive}
           onClose={handleClose("modalTwo")}
@@ -462,25 +362,27 @@ export default function Dashboard() {
           {hasPermission() ? (
             <div className="inventory-button-group">
               <button
-                className="open-interface"
-                onClick={handleOpen("modalOne")}
-              >
-                New inventory entry
-              </button>
-              <button
                 className="open-new-category"
                 onClick={handleOpen("modalTwo")}
               >
                 New category
               </button>
               {activeCategory ? (
-                <button
-                  className="open-new-category"
-                  onClick={handleOpen("modalThree")}
-                >
-                  Add column to category
-                </button>
+                <>
+                  <button
+                    className="open-new-category"
+                    onClick={handleOpen("modalThree")}
+                  >
+                    Add column to category
+                  </button>
+                  <button className='new-row'>
+                    
+                  </button>
+                </>
               ) : null}
+              <button className='new-row' onClick={newRow}>
+                New row
+              </button>
             </div>
           ) : null}
           <div className="grid-res">

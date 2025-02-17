@@ -1,5 +1,6 @@
-import { setNewCategory } from "../requests/inventory";
-import React from "react";
+import React from 'react';
+
+import { setNewCategory } from '../requests/inventory';
 
 export const categoryNewRow = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -125,7 +126,8 @@ export const deleteCategoryItem = async (category: string, item: string) => {
 }
 
 export const createNewEntry = async (category: string) => {
-    const response = await fetch(`http://localhost:8000/database/inventory/categories/entry/create`, {
+    console.log(category);
+    const response = await fetch(`http://localhost:8000/database/entry/create`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'

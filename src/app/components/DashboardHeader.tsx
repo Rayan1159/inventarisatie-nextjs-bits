@@ -1,10 +1,10 @@
 "use client";
 
-import { HeaderNav } from "@/app/components/SubComponents/HeaderNav";
-import { getCategoryKeys } from "@/app/fn/category";
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
+import { HeaderNav } from '@/app/components/SubComponents/HeaderNav';
+import { getCategoryKeys } from '@/app/fn/category';
 
 interface DashboardHeaderProps {
   headerNavClassname?: string;

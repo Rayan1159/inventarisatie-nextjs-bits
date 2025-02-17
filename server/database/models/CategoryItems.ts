@@ -1,20 +1,19 @@
 import { DataTypes, Model, Sequelize} from 'sequelize';
-import {Category} from "./Category";
 
 export interface CategoryItemsAttributes {
     id?: number;
     entry_id?: number;
     category_id: number;
-    item_name: string;
+    item_name?: string;
     item_value?: string;
 }
 
-export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsCreationAttributes> implements CategoryItemsAttributes {
+export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsAttributes> implements CategoryItemsAttributes {
     id!: number;
     item_id: number;
     entry_id: number;
     category_id: number;
-    item_name: string;
+    item_name?: string;
     item_value?: string;
 
     static initModel(sequelize: Sequelize) {
@@ -25,7 +24,7 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsC
             },
             item_name: {
                 type: DataTypes.STRING,
-                allowNull: false
+                allowNull: true
             },
             item_value: {
                 type: DataTypes.STRING,

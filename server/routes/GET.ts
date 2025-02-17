@@ -151,9 +151,11 @@ routerGet.post(
   async (req, res, next) => {
 
     const { category, item, value, id} = req.body;
+    console.log("id thingy", id);
+
     const catId = await Category.getCategoryId(category);
 
-    await CategoryItems.setCategoryItemValue(catId as number, item, value);
+    await CategoryItems.setCategoryItemValue(catId as number, item, value, id);
 
     res.status(200).json({
      status: 200,
@@ -172,7 +174,7 @@ routerGet.post(
           return res.status(404).json({ error: 'Category not found' });
       }
 
-      const entryId = await CategoryItems.createNewEntry(cat.category_id);
+      const entryId = await CategoryItems.createNewEntry(cat.id);
       res.json({ id: entryId });
   } catch (error) {
       res.status(500).json({ error: error.message });

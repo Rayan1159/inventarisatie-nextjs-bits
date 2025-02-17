@@ -1,7 +1,8 @@
 "use client";
 
-import { AuthCard } from "./components/AuthCard";
-import "./page.css";
+import './page.css';
+
+import { AuthCard } from './components/AuthCard';
 
 export default function login() {
   return (
