@@ -6,12 +6,16 @@ import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'ag-grid-community/styles/ag-grid.css';
 
 import { AgGridReact } from 'ag-grid-react';
-import { redirect, useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import React from 'react';
 
 import { DashboardHeader } from '@/app/components/DashboardHeader';
 import {
-    addItemValue, createNewEntry, deleteCategoryItem, getCategoryInventoryKeys, getCategoryValues,
+    addItemValue, 
+    createNewEntry, 
+    deleteCategoryItem, 
+    getCategoryInventoryKeys, 
+    getCategoryValues,
     setCategoryItems
 } from '@/app/fn/category';
 import { categoryExists, setNewCategory } from '@/app/requests/inventory';
@@ -130,7 +134,6 @@ export default function Dashboard() {
       return;
     }
   
-    // Map data with ID preservation
     const rows = categoryValues.values.values.map((entry: any) => {
       const row: Record<string, any> = { id: entry.id }; // Preserve ID
       

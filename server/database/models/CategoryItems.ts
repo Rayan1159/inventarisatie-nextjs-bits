@@ -122,15 +122,11 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsA
     static async createNewEntry(catid: number) {
         const entry = await CategoryItems.create({
             category_id: catid,
-            item_name: '__entry__', // Special marker for entry ID
-            item_value: '1',
             entry_id: null
         });
         
-        // Get the auto-generated ID
         const entryId = entry.id;
-        
-        // Update the entry_id with its own ID
+
         await CategoryItems.update(
             { entry_id: entryId },
             { where: { id: entryId } }
