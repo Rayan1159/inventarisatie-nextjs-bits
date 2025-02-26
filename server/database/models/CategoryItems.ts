@@ -119,18 +119,22 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsA
         console.log("deleted item with name", itemKey, "for category id", catid);
     }
 
-    static async createNewEntry(catid: number) {
+    static async createNewEntry(catid: number, entry_name: string) {
         const entry = await CategoryItems.create({
             category_id: catid,
             entry_id: null
         });
-        
+
         const entryId = entry.id;
 
-        await CategoryItems.update(
-            { entry_id: entryId },
-            { where: { id: entryId } }
-        );
+        try {
+            await CategoryItems.update(
+                { entry_id: entryId },
+                { where: { id: entryId } }
+            );
+        } catch (e: any) {
+            console.error("Sequelize exception occurred while creating entry", e.message);
+        }
         
         return entryId;
     }

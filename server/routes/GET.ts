@@ -1,5 +1,4 @@
-import { Request, Response, NextFunction } from "express";
-import { Router } from "express";
+import { Request, Response, NextFunction, Router } from "express";
 import { Inventory } from "../database/models/Inventory";
 import sequelize from "../database/sequelize";
 import Category from "../database/models/Category";
@@ -25,7 +24,6 @@ routerGet.post(
     const keys = await Category.getCategories();
     if (keys) res.status(200).json(keys);
   } 
-  
 )
 
 routerGet.get(
@@ -149,7 +147,6 @@ routerGet.post(
 routerGet.post(
   "/inventory/categories/values/update", 
   async (req, res, next) => {
-
     const { category, item, value, id} = req.body;
     console.log("id thingy", id);
 
@@ -165,7 +162,7 @@ routerGet.post(
 )
 
 routerGet.post(
-  "/entry/create", async (req, res, next) => {
+  "/entry/create", async (req, res) => {
     try {
       const { category } = req.body;
       const cat = await Category.findOne({ where: { name: category } });
@@ -174,11 +171,11 @@ routerGet.post(
           return res.status(404).json({ error: 'Category not found' });
       }
 
-      const entryId = await CategoryItems.createNewEntry(cat.id);
+      const entryId = await CategoryItems.createNewEntry(cat.id, "default item");
       res.json({ id: entryId });
-  } catch (error) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
-  }
+    }
   }
 )
 

@@ -28,7 +28,6 @@ routerPost.post('/entry/create', async (req, res, _next) => {
         res.status(500).json({
             error: "onjuist permissie level"
         })
-        return;
     }
 })
 

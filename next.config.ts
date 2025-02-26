@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   env: {  
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
     GUEST_PASSWORD: process.env.GUEST_PASSWORD,
+    ENVIRONMENT: process.env.ENVIRONMENT,
   },
 };
 

@@ -36,6 +36,7 @@ export default function Dashboard() {
 
   const [gridApi, setGridApi] = React.useState(null);
 
+
   const handleGridReady = (params: any) => {
     setGridApi(params.api);
   };
@@ -104,6 +105,14 @@ export default function Dashboard() {
     const data = await categoryExists(category);
     const categoryValues = await getCategoryValues(category);
     const response = await data.json();
+
+    const newColDefsObj = {
+      field: 'id', 
+      headerName: 'ID', 
+      editable: false, 
+      filter: true,
+      width: 100 
+    }
   
     if (category !== activeCategory) {
       cleanGridData();
@@ -111,15 +120,9 @@ export default function Dashboard() {
   
     if (response.exists === true) {
       const inventoryKeys: string[] = await getCategoryInventoryKeys(category);
-      // Add ID column first, followed by other columns
+
       const newColDefs = [
-        { 
-          field: 'id', 
-          headerName: 'ID', 
-          editable: false, // Prevent editing of IDs
-          filter: true,
-          width: 100 
-        },
+        newColDefsObj,
         ...inventoryKeys.map(value => ({ 
           field: value, 
           editable: hasPermission() // Only editable with permissions
@@ -198,6 +201,7 @@ export default function Dashboard() {
         return;
       }
       const { data, colDef, newValue } = params;
+      console.log("Data:", data);
       if (colDef && colDef.field) {
         addItemValue(activeCategory, colDef.field, newValue, data.id);
         refreshGrid();

@@ -26,8 +26,6 @@ export function AuthCard() {
       return;
     }
 
-    console.log(process.env.ADMIN_PASSWORD);
-
     if (username === "admin" && password === process.env.ADMIN_PASSWORD) {
       const user = {
         username: "admin",
