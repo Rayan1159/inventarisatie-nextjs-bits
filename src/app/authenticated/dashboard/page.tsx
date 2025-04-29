@@ -105,14 +105,14 @@ export default function Dashboard() {
     const data = await categoryExists(category);
     const categoryValues = await getCategoryValues(category);
     const response = await data.json();
-
+  
     const newColDefsObj = {
       field: 'id', 
       headerName: 'ID', 
       editable: false, 
       filter: true,
       width: 100 
-    }
+    };
   
     if (category !== activeCategory) {
       cleanGridData();
@@ -120,7 +120,6 @@ export default function Dashboard() {
   
     if (response.exists === true) {
       const inventoryKeys: string[] = await getCategoryInventoryKeys(category);
-
       const newColDefs = [
         newColDefsObj,
         ...inventoryKeys.map(value => ({ 
@@ -130,25 +129,31 @@ export default function Dashboard() {
       ];
       setColDefs(newColDefs);
       assignInputs(newColDefs);
+      console.log("Column Definitions Set:", newColDefs); // Debug column defs
     }
   
-    if (categoryValues.values.length === 0) {
+    if (categoryValues.values.values.length === 0) {
       setRowData([]);
       return;
     }
   
     const rows = categoryValues.values.values.map((entry: any) => {
       const row: Record<string, any> = { id: entry.id }; // Preserve ID
-      
       entry.values.forEach((item: any) => {
-        row[item.key] = item.value;
+        if (item.key !== null) { // Skip null keys
+          row[item.key] = item.value;
+        } else {
+          console.warn("Skipping item with null key in entry ID:", entry.id); // Debug null keys
+        }
       });
-      
+      console.log("Mapped Row:", row); // Debug mapped row data
       return row;
     });
-    setCategory(category);
-  };
   
+    setRowData(rows);
+    setCategory(category);
+    console.log(category);
+  };
 
   const handleCallback = (childData: any) => {
     reloadGrid(childData);
@@ -195,20 +200,31 @@ export default function Dashboard() {
   const defaultColDef = {
     flex: 1,
     editable: true,
-    onCellValueChanged: (params: any) => {
+    onCellValueChanged: async (params) => {
       if (!hasPermission()) {
         alert("Je hebt geen permissie om items te bewerken");
         return;
       }
       const { data, colDef, newValue } = params;
-      console.log("Data:", data);
-      if (colDef && colDef.field) {
-        addItemValue(activeCategory, colDef.field, newValue, data.id);
-        refreshGrid();
+      if (colDef && colDef.field && colDef.field !== 'id') {
+        try {
+          await addItemValue(activeCategory, colDef.field, newValue, data.id);
+          // Update local state to reflect the change
+          setRowData((prev) =>
+            prev.map((row) =>
+              row.id === data.id ? { ...row, [colDef.field]: newValue } : row
+            )
+          );
+          refreshGrid();
+        } catch (error) {
+          console.error("Failed to save data:", error);
+          alert("Fout bij het opslaan van gegevens. Probeer het opnieuw.");
+          // Optionally revert the change in the grid
+          params.api.undoCellEditing();
+        }
       }
     },
   };
-
   const categoryOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target == null) return;
     setCategory(event.target.value);
@@ -244,7 +260,7 @@ export default function Dashboard() {
     const storageExists = () => {
       return localStorage.getItem("user") !== null;
     };
-
+  
     const isLoggedIn = () => {
       if (!storageExists()) return;
       const user = JSON.parse(localStorage.getItem("user")!);
@@ -252,47 +268,49 @@ export default function Dashboard() {
         redirect("/login");
       }
     };
-
+  
     const setPermission = () => {
       const user = JSON.parse(localStorage.getItem("user")!);
       if (!storageExists()) return;
       setPermissionLevel(user.permissionLevel);
     };
+  
+    const loadLastCategory = () => {
+      const lastCategory = localStorage.getItem("lastCategory");
+      if (lastCategory) {
+        setCategory(lastCategory);
+        reloadGrid(lastCategory);
+      }
+    };
+  
     setPermission();
     isLoggedIn();
-
+    loadLastCategory();
+  
     document.title = "Inventarisatie - Dashboard";
   }, []);
 
   const newRow = async () => {
-    if (activeCategory === "") {
-      alert('Selecteer een categorie');
-      return;
-    }
-
     if (!gridApi) return console.log("gridapi not initialized");
-
+  
     inventoryForm.forEach((column) => {
       console.log("Column name:", column.name);
     });
-
-    const activeRows: any[] = [];
-    gridApi.forEachNode((node: any) => {
-      activeRows.push(node.data);
-    });
-
+  
     if (inventoryForm.length < 1) {
       console.warn("Only the ID column exists.");
       return;
     }
     
     const newEntry = await createNewEntry(activeCategory);
-    const newRowEntry: Record<string, any> = { id: newEntry.id };
-    inventoryForm.forEach((item) => {
-      newRowEntry[item.name] = item.placeholder || "";
-    });
-    setRowData([...activeRows, newRowEntry]);
-  }
+    if (newEntry && newEntry.id) {
+      // Reload the grid data from the backend to ensure consistency
+      await reloadGrid(activeCategory);
+    } else {
+      console.error("Failed to create new entry");
+      alert("Fout bij het toevoegen van een nieuwe rij. Probeer het opnieuw.");
+    }
+  };
 
   return (
     <div className="container">
@@ -393,19 +411,8 @@ export default function Dashboard() {
             </div>
           ) : null}
           <div className="grid-res">
-            <AgGridReact
+          <AgGridReact
               onGridReady={handleGridReady}
-              onCellValueChanged={(params) => {
-                if (!hasPermission()) {
-                  alert("Je hebt geen permissie om items te bewerken");
-                  return;
-                }
-                const { data, colDef, newValue } = params;
-                if (colDef && colDef.field) {
-                  addItemValue(activeCategory, colDef.field, newValue);
-                  refreshGrid();
-                }
-              }}
               rowData={rowData}
               columnDefs={
                 colDefs.length > 0

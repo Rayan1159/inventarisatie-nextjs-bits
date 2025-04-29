@@ -68,30 +68,30 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsA
 
     static async getCategoryItemValues(catid: number) {
         const items = await CategoryItems.findAll({
-            where: {
-                category_id: catid
-            }
+          where: {
+            category_id: catid
+          }
         });
-    
+      
         const entriesMap = new Map<number, any>();
         items.forEach((item) => {
-            const entryId = item.entry_id; 
-            if (!entriesMap.has(entryId)) {
-                entriesMap.set(entryId, {
-                    id: entryId,
-                    values: []
-                });
-            }
-            entriesMap.get(entryId).values.push({
-                key: item.item_name,
-                value: item.item_value
+          const entryId = item.entry_id; 
+          if (!entriesMap.has(entryId)) {
+            entriesMap.set(entryId, {
+              id: entryId,
+              values: []
             });
+          }
+          entriesMap.get(entryId).values.push({
+            key: item.item_name,
+            value: item.item_value
+          });
         });
-    
+      
         return {
-            values: Array.from(entriesMap.values())
+          values: Array.from(entriesMap.values())
         };
-    }
+      }
 
 
     static async setCategoryItemValue(catid: number, item: string, value: string, entryId: number) {
