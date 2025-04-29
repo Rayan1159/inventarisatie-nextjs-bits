@@ -124,12 +124,12 @@ export default function Dashboard() {
         newColDefsObj,
         ...inventoryKeys.map(value => ({ 
           field: value, 
-          editable: hasPermission() // Only editable with permissions
+          editable: hasPermission() 
         }))
       ];
       setColDefs(newColDefs);
       assignInputs(newColDefs);
-      console.log("Column Definitions Set:", newColDefs); // Debug column defs
+      console.log("Column Definitions Set:", newColDefs); 
     }
   
     if (categoryValues.values.values.length === 0) {
@@ -138,15 +138,15 @@ export default function Dashboard() {
     }
   
     const rows = categoryValues.values.values.map((entry: any) => {
-      const row: Record<string, any> = { id: entry.id }; // Preserve ID
+      const row: Record<string, any> = { id: entry.id }; 
       entry.values.forEach((item: any) => {
-        if (item.key !== null) { // Skip null keys
+        if (item.key !== null) { 
           row[item.key] = item.value;
         } else {
-          console.warn("Skipping item with null key in entry ID:", entry.id); // Debug null keys
+          console.warn("Skipping item with null key in entry ID:", entry.id); 
         }
       });
-      console.log("Mapped Row:", row); // Debug mapped row data
+      console.log("Mapped Row:", row);
       return row;
     });
   
