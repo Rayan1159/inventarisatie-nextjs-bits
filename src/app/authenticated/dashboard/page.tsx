@@ -66,12 +66,6 @@ export default function Dashboard() {
     setGridApi(params.api);
   };
 
-  const refreshGrid = () => {
-    if (gridApi) {
-      gridApi.refreshCells();
-    }
-  };
-
   const cleanGridData = useCallback(() => {
     setColDefs([]);
     setRowData([]);
