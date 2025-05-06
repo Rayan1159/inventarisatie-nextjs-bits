@@ -145,20 +145,30 @@ routerGet.post(
 });
 
 routerGet.post(
-  "/inventory/categories/values/update", 
-  async (req, res, next) => {
-    const { category, item, value, id} = req.body;
-    console.log("id thingy", id);
+    "/inventory/categories/values/update",
+    async (req, res, next) => {
+        const { category, item, value, id} = req.body;
+        console.log("Updating item:", { category, item, value, id });
 
-    const catId = await Category.getCategoryId(category);
+        try {
+            const catId = await Category.getCategoryId(category);
+            console.log("Category ID:", catId);
 
-    await CategoryItems.setCategoryItemValue(catId as number, item, value, id);
+            await CategoryItems.setCategoryItemValue(catId as number, item, value, id);
+            console.log("Update successful");
 
-    res.status(200).json({
-     status: 200,
-     message: "Category item value updated successfully."
-    });
-  }
+            res.status(200).json({
+                status: 200,
+                message: "Category item value updated successfully."
+            });
+        } catch (error) {
+            console.error("Error updating item:", error);
+            res.status(500).json({
+                status: 500,
+                message: "Failed to update category item value."
+            });
+        }
+    }
 )
 
 routerGet.post(

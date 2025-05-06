@@ -95,16 +95,27 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsA
 
 
     static async setCategoryItemValue(catid: number, item: string, value: string, entryId: number) {
-        await CategoryItems.update({
-            item_value: value,
-            entry_id: entryId
-        }, {
-            where: {
-                category_id: catid,
-                item_name: item,
+        console.log("Executing update with:", { catid, item, value, entryId });
+
+        try {
+            const result = await CategoryItems.update({
+                item_value: value,
                 entry_id: entryId
-            }
-        });
+            }, {
+                where: {
+                    category_id: catid,
+                    item_name: item,
+                    item_value: item,
+                    entry_id: entryId
+                }
+            });
+
+            console.log("Update result:", result);
+            return result;
+        } catch (error) {
+            console.error("Database update error:", error);
+            throw error;
+        }
     }
 
     static async deleteCategoryItem(catid: number, itemKey: string) {

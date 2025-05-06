@@ -7,45 +7,29 @@ import 'ag-grid-community/styles/ag-grid.css';
 
 import { AgGridReact } from 'ag-grid-react';
 import { redirect } from 'next/navigation';
-import React from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 
 import { DashboardHeader } from '@/app/components/DashboardHeader';
 import {
-    addItemValue, 
-    createNewEntry, 
-    deleteCategoryItem, 
-    getCategoryInventoryKeys, 
-    getCategoryValues,
-    setCategoryItems
+  addItemValue,
+  createNewEntry,
+  deleteCategoryItem,
+  getCategoryInventoryKeys,
+  getCategoryValues,
+  setCategoryItems
 } from '@/app/fn/category';
 import { categoryExists, setNewCategory } from '@/app/requests/inventory';
 import { Box, Button, Grid2 as Stack, TextField, Typography } from '@mui/material';
 import Modal from '@mui/material/Modal';
 
 export default function Dashboard() {
-  const [activeCategory, setCategory] = React.useState("");
-  const [permissionLevel, setPermissionLevel] = React.useState(0);
-
-  const [colDefs, setColDefs] = React.useState<Record<string, any>[]>([]);
-  const [rowData, setRowData] = React.useState<Record<string, any>[]>([]);
-
-  const [inventoryForm, setInventoryForm] = React.useState<
-    Record<string, any>[]
-  >([]);
-  const [categoryData, setCategoryDataForm] = React.useState<string>("");
-
-  const [gridApi, setGridApi] = React.useState(null);
-
-
-  const handleGridReady = (params: any) => {
-    setGridApi(params.api);
-  };
-
-  const refreshGrid = () => {
-    if (gridApi) {
-      gridApi.refreshCells();
-    }
-  };
+  const [activeCategory, setCategory] = useState("");
+  const [permissionLevel, setPermissionLevel] = useState(0);
+  const [colDefs, setColDefs] = useState([]);
+  const [rowData, setRowData] = useState([]);
+  const [inventoryForm, setInventoryForm] = useState([]);
+  const [categoryData, setCategoryDataForm] = useState("");
+  const [gridApi, setGridApi] = useState(null);
 
   const categoryInterfaceStyle = {
     display: "flex",
@@ -65,10 +49,7 @@ export default function Dashboard() {
     p: 4,
   };
 
-  const [open, setOpen] = React.useState({
-    modalOne: {
-      isActive: false,
-    },
+  const [open, setOpen] = useState({
     modalTwo: {
       isActive: false,
     },
@@ -77,204 +58,281 @@ export default function Dashboard() {
     },
   });
 
-  const cleanGridData = () => {
-    setColDefs((colDefs) => []);
-    rowData?.forEach((row) =>
-      row.values.forEach((value) => (value.value = null))
-    );
+  const hasPermission = useCallback(() => {
+    return permissionLevel >= 1;
+  }, [permissionLevel]);
+
+  const handleGridReady = (params) => {
+    setGridApi(params.api);
   };
 
-  const updateColumn = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const refreshGrid = () => {
+    if (gridApi) {
+      gridApi.refreshCells();
+    }
+  };
+
+  const cleanGridData = useCallback(() => {
+    setColDefs([]);
+    setRowData([]);
+    setInventoryForm([]);
+  }, []);
+
+  const updateColumn = (event) => {
     setCategoryDataForm(event.target.value);
   };
 
-  const assignInputs = (categoryValues: any[]) => {
-    console.log(categoryValues);
-    const updatedInventoryForm = categoryValues.flat().map((value) => {
-      return {
-        name: value.field,
-        placeholder: value.field
+  const reloadGrid = useCallback(async (category) => {
+    if (!category) return;
+
+    try {
+      const data = await categoryExists(category);
+      const response = await data.json();
+
+      if (category !== activeCategory) {
+        cleanGridData();
       }
-    });
-    setInventoryForm((form) => [...form, ...updatedInventoryForm]);
-    return inventoryForm;
-  };
 
+      if (response.exists) {
+        const inventoryKeys = await getCategoryInventoryKeys(category);
+        const newColDefs = [
+          {
+            field: 'id',
+            headerName: 'ID',
+            editable: false,
+            filter: true,
+            width: 100
+          },
+          ...inventoryKeys.map(value => ({
+            field: value,
+            editable: hasPermission()
+          }))
+        ];
 
-  const reloadGrid = async (category: string) => {
-    const data = await categoryExists(category);
-    const categoryValues = await getCategoryValues(category);
-    const response = await data.json();
-  
-    const newColDefsObj = {
-      field: 'id', 
-      headerName: 'ID', 
-      editable: false, 
-      filter: true,
-      width: 100 
-    };
-  
-    if (category !== activeCategory) {
-      cleanGridData();
-    }
-  
-    if (response.exists === true) {
-      const inventoryKeys: string[] = await getCategoryInventoryKeys(category);
-      const newColDefs = [
-        newColDefsObj,
-        ...inventoryKeys.map(value => ({ 
-          field: value, 
-          editable: hasPermission() 
-        }))
-      ];
-      setColDefs(newColDefs);
-      assignInputs(newColDefs);
-      console.log("Column Definitions Set:", newColDefs); 
-    }
-  
-    if (categoryValues.values.values.length === 0) {
-      setRowData([]);
-      return;
-    }
-  
-    const rows = categoryValues.values.values.map((entry: any) => {
-      const row: Record<string, any> = { id: entry.id }; 
-      entry.values.forEach((item: any) => {
-        if (item.key !== null) { 
-          row[item.key] = item.value;
-        } else {
-          console.warn("Skipping item with null key in entry ID:", entry.id); 
+        setColDefs(newColDefs);
+        setInventoryForm(inventoryKeys.map(value => ({
+          name: value,
+          placeholder: value
+        })));
+
+        const categoryValues = await getCategoryValues(category);
+        if (categoryValues.values.values.length === 0) {
+          setRowData([]);
+          return;
         }
+
+        // Filter out rows with empty values
+        const rows = categoryValues.values.values.map((entry) => {
+          const row = { id: entry.id };
+          entry.values.forEach((item) => {
+            if (item.key && item.value !== null && item.value !== "") {
+              row[item.key] = item.value;
+            }
+          });
+          return row;
+        });
+
+        setRowData(rows);
+      } else {
+        setRowData([]);
+      }
+
+      setCategory(category);
+      localStorage.setItem("lastCategory", category);
+    } catch (error) {
+      console.error("Error loading grid data:", error);
+    }
+  }, [activeCategory, cleanGridData, hasPermission]);
+
+  const handleCallback = (childData) => {
+    if (childData) {
+      setCategory(childData);
+      localStorage.setItem("lastCategory", childData);
+      reloadGrid(childData);
+    }
+  };
+  const handleOpen = (modal) => () =>
+      setOpen({
+        ...open,
+        [modal]: {
+          isActive: true,
+        },
       });
-      console.log("Mapped Row:", row);
-      return row;
-    });
-  
-    setRowData(rows);
-    setCategory(category);
-    console.log(category);
-  };
 
-  const handleCallback = (childData: any) => {
-    reloadGrid(childData);
-  };
-
-  const handleOpen = (modal: string) => () =>
-    setOpen({
-      ...open,
-      [modal]: {
-        isActive: true,
-      },
-    });
-
-  const handleClose = (modal: string) => () =>
-    setOpen({
-      ...open,
-      [modal]: {
-        isActive: false,
-      },
-    });
-
-    const handleDeleteRow = (rowIndex: number) => {
-      const rowToDelete = rowData[rowIndex];
-      if (!rowToDelete?.id) return;
-      deleteCategoryItem(activeCategory, rowToDelete.id).then(() => {
-          setRowData(prev => prev.filter(row => row.id !== rowToDelete.id));
-   
-          reloadGrid(activeCategory);
+  const handleClose = (modal) => () =>
+      setOpen({
+        ...open,
+        [modal]: {
+          isActive: false,
+        },
       });
-  };
 
-  const deleteButtonRenderer = (params: any) => {
+  const handleDeleteRow = useCallback(async (rowIndex) => {
+    const rowToDelete = rowData[rowIndex];
+    if (!rowToDelete?.id) return;
+
+    try {
+      await deleteCategoryItem(activeCategory, rowToDelete.id);
+      setRowData(prev => prev.filter(row => row.id !== rowToDelete.id));
+    } catch (error) {
+      console.error("Error deleting row:", error);
+      alert("Failed to delete row. Please try again.");
+    }
+  }, [activeCategory, rowData]);
+
+  const deleteButtonRenderer = useCallback((params) => {
     return (
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => handleDeleteRow(params.node.rowIndex)}
-      >
-        Delete
-      </Button>
+        <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => handleDeleteRow(params.node.rowIndex)}
+        >
+          Delete
+        </Button>
     );
-  };
+  }, [handleDeleteRow]);
 
-  const defaultColDef = {
+  const saveCell = useCallback(async (category, field, value, id) => {
+    if (!hasPermission()) {
+      alert("You don't have permission to edit items");
+      return false;
+    }
+
+    if (!field || field === 'id' || !id) return false;
+
+    try {
+      if (value !== null && value !== "") {
+        await addItemValue(category, field, value, id);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Failed to save data:", error);
+      alert("Error saving data. Please try again.");
+      return false;
+    }
+  }, [hasPermission]);
+
+  const defaultColDef = useMemo(() => ({
     flex: 1,
     editable: true,
-    onCellValueChanged: async (params) => {
+    onCellEditingStopped: async (params) => {
       if (!hasPermission()) {
         alert("Je hebt geen permissie om items te bewerken");
         return;
       }
+
       const { data, colDef, newValue } = params;
       if (colDef && colDef.field && colDef.field !== 'id') {
         try {
           await addItemValue(activeCategory, colDef.field, newValue, data.id);
-          // Update local state to reflect the change
           setRowData((prev) =>
-            prev.map((row) =>
-              row.id === data.id ? { ...row, [colDef.field]: newValue } : row
-            )
+              prev.map((row) =>
+                  row.id === data.id ? { ...row, [colDef.field]: newValue } : row
+              )
           );
-          refreshGrid();
         } catch (error) {
           console.error("Failed to save data:", error);
           alert("Fout bij het opslaan van gegevens. Probeer het opnieuw.");
-          // Optionally revert the change in the grid
-          params.api.undoCellEditing();
         }
       }
     },
-  };
-  const categoryOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  }), [activeCategory, hasPermission]);
+
+  const categoryOnChange = (event) => {
     if (event.target == null) return;
     setCategory(event.target.value);
   };
 
-  const addNewCategory = () => {
+  const addNewCategory = useCallback(async () => {
     if (!hasPermission()) {
-      alert("Je hebt geen permissie om een categorie toe te voegen");
+      alert("You don't have permission to add a category");
       return;
     }
 
-    if (activeCategory) {
-      setNewCategory(activeCategory);
-    } else {
-      console.error("category cannot be empty");
+    if (!activeCategory) {
+      alert("Category name cannot be empty");
+      return;
+    }
+
+    try {
+      await setNewCategory(activeCategory);
+      handleClose("modalTwo")();
+      reloadGrid(activeCategory);
+    } catch (error) {
+      console.error("Error adding category:", error);
+      alert("Failed to add category. Please try again.");
+    }
+  }, [activeCategory, hasPermission, handleClose, reloadGrid]);
+
+  const addColumnToCategory = useCallback(async () => {
+    if (!activeCategory || !categoryData) {
+      alert("Category and column name are required");
+      return;
+    }
+
+    try {
+      await setCategoryItems(activeCategory, {
+        item_name: categoryData,
+      });
+      handleClose("modalThree")();
+      reloadGrid(activeCategory);
+      setCategoryDataForm("");
+    } catch (error) {
+      console.error("Error adding column:", error);
+      alert("Failed to add column. Please try again.");
+    }
+  }, [activeCategory, categoryData, handleClose, reloadGrid]);
+
+  const newRow = async () => {
+    if (!activeCategory) {
+      alert("Please select a category first");
+      return;
+    }
+
+    if (!gridApi) {
+      console.log("gridapi not initialized");
+      return;
+    }
+
+    try {
+      const newEntry = await createNewEntry(activeCategory);
+      if (newEntry && newEntry.id) {
+        // Add the new row to the existing data instead of reloading
+        setRowData(prev => [...prev, { id: newEntry.id }]);
+      } else {
+        console.error("Failed to create new entry");
+        alert("Error adding a new row. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error creating new row:", error);
+      alert("Error adding a new row. Please try again.");
     }
   };
 
-
-  const addColumnToCategory = async () => {
-    if (!activeCategory) return;
-    await setCategoryItems(activeCategory, {
-      item_name: categoryData,
-    });
-    reloadGrid(activeCategory);
-  };
-
-  const hasPermission = () => {
-    return permissionLevel >= 1;
-  };
-
-  React.useEffect(() => {
+  useEffect(() => {
     const storageExists = () => {
       return localStorage.getItem("user") !== null;
     };
-  
+
     const isLoggedIn = () => {
-      if (!storageExists()) return;
-      const user = JSON.parse(localStorage.getItem("user")!);
+      if (!storageExists()) {
+        redirect("/login");
+        return;
+      }
+
+      const user = JSON.parse(localStorage.getItem("user"));
       if (user === null) {
         redirect("/login");
       }
     };
-  
+
     const setPermission = () => {
-      const user = JSON.parse(localStorage.getItem("user")!);
       if (!storageExists()) return;
+      const user = JSON.parse(localStorage.getItem("user"));
       setPermissionLevel(user.permissionLevel);
     };
-  
+
     const loadLastCategory = () => {
       const lastCategory = localStorage.getItem("lastCategory");
       if (lastCategory) {
@@ -282,160 +340,133 @@ export default function Dashboard() {
         reloadGrid(lastCategory);
       }
     };
-  
+
     setPermission();
     isLoggedIn();
     loadLastCategory();
-  
-    document.title = "Inventarisatie - Dashboard";
-  }, []);
 
-  const newRow = async () => {
-    if (!gridApi) return console.log("gridapi not initialized");
-  
-    inventoryForm.forEach((column) => {
-      console.log("Column name:", column.name);
-    });
-  
-    if (inventoryForm.length < 1) {
-      console.warn("Only the ID column exists.");
-      return;
-    }
-    
-    const newEntry = await createNewEntry(activeCategory);
-    if (newEntry && newEntry.id) {
-      // Reload the grid data from the backend to ensure consistency
-      await reloadGrid(activeCategory);
-    } else {
-      console.error("Failed to create new entry");
-      alert("Fout bij het toevoegen van een nieuwe rij. Probeer het opnieuw.");
-    }
-  };
+    document.title = "Inventarisatie - Dashboard";
+  }, [reloadGrid]);
 
   return (
-    <div className="container">
-      <header className="global-header-wrapper">
-        <DashboardHeader
-          headerNavClassname="global-header"
-          categoryState={activeCategory}
-          parentCallback={handleCallback}
-        />
-      </header>
-      <div className="dashboard-container">
-
-        <Modal
-          open={open.modalTwo.isActive}
-          onClose={handleClose("modalTwo")}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={categoryInterfaceStyle}>
-            <Typography
-              id="modal-modal-title"
-              variant="h6"
-              component="h2"
-              gutterBottom
-            >
-              Nieuwe categorie toevoegen
-            </Typography>
-            <Stack spacing={2}>
-              <TextField
-                fullWidth
-                label="Category"
-                variant="outlined"
-                name="category"
-                value={activeCategory}
-                onChange={categoryOnChange}
-              />
-
-              <Button variant="contained" onClick={addNewCategory}>
-                Add
-              </Button>
-            </Stack>
-          </Box>
-        </Modal>
-        <Modal
-          open={open.modalThree.isActive}
-          onClose={handleClose("modalThree")}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={categoryInterfaceStyle}>
-            <Typography
-              id="modal-modal-title"
-              variant="h6"
-              component="h2"
-              gutterBottom
-            >
-              Nieuw column toevoegen aan categorie
-            </Typography>
-            <Stack spacing={2}>
-              <TextField
-                fullWidth
-                label="Column"
-                variant="outlined"
-                name="column"
-                onChange={updateColumn}
-              />
-              <Button variant="contained" onClick={addColumnToCategory}>
-                Add
-              </Button>
-            </Stack>
-          </Box>
-        </Modal>
-        <div className="ag-theme-quartz" style={{ height: 750, width: 1400 }}>
-          {hasPermission() ? (
-            <div className="inventory-button-group">
-              <button
-                className="open-new-category"
-                onClick={handleOpen("modalTwo")}
+      <div className="container">
+        <header className="global-header-wrapper">
+          <DashboardHeader
+              headerNavClassname="global-header"
+              categoryState={activeCategory}
+              parentCallback={handleCallback}
+          />
+        </header>
+        <div className="dashboard-container">
+          <Modal
+              open={open.modalTwo.isActive}
+              onClose={handleClose("modalTwo")}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+          >
+            <Box sx={categoryInterfaceStyle}>
+              <Typography
+                  id="modal-modal-title"
+                  variant="h6"
+                  component="h2"
+                  gutterBottom
               >
-                New category
-              </button>
-              {activeCategory ? (
-                <>
+                Add New Category
+              </Typography>
+              <Stack spacing={2}>
+                <TextField
+                    fullWidth
+                    label="Category"
+                    variant="outlined"
+                    name="category"
+                    value={activeCategory}
+                    onChange={categoryOnChange}
+                />
+
+                <Button variant="contained" onClick={addNewCategory}>
+                  Add
+                </Button>
+              </Stack>
+            </Box>
+          </Modal>
+          <Modal
+              open={open.modalThree.isActive}
+              onClose={handleClose("modalThree")}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+          >
+            <Box sx={categoryInterfaceStyle}>
+              <Typography
+                  id="modal-modal-title"
+                  variant="h6"
+                  component="h2"
+                  gutterBottom
+              >
+                Add New Column to Category
+              </Typography>
+              <Stack spacing={2}>
+                <TextField
+                    fullWidth
+                    label="Column"
+                    variant="outlined"
+                    name="column"
+                    value={categoryData}
+                    onChange={updateColumn}
+                />
+                <Button variant="contained" onClick={addColumnToCategory}>
+                  Add
+                </Button>
+              </Stack>
+            </Box>
+          </Modal>
+          <div className="ag-theme-quartz" style={{ height: 750, width: 1400 }}>
+            {hasPermission() && (
+                <div className="inventory-button-group">
                   <button
-                    className="open-new-category"
-                    onClick={handleOpen("modalThree")}
+                      className="open-new-category"
+                      onClick={handleOpen("modalTwo")}
                   >
-                    Add column to category
+                    New category
                   </button>
-                  <button className='new-row'>
-                    
+                  {activeCategory && (
+                      <button
+                          className="open-new-category"
+                          onClick={handleOpen("modalThree")}
+                      >
+                        Add column to category
+                      </button>
+                  )}
+                  <button className='new-row' onClick={newRow}>
+                    New row
                   </button>
-                </>
-              ) : null}
-              <button className='new-row' onClick={newRow}>
-                New row
-              </button>
+                </div>
+            )}
+            <div className="grid-res">
+              <AgGridReact
+                  onGridReady={handleGridReady}
+                  rowData={rowData}
+                  columnDefs={
+                    colDefs.length > 0
+                        ? [
+                          ...colDefs,
+                          {
+                            headerName: "Actions",
+                            field: "actions",
+                            cellRenderer: deleteButtonRenderer,
+                            width: 150,
+                            pinned: "right",
+                          },
+                        ]
+                        : colDefs
+                  }
+                  defaultColDef={defaultColDef}
+                  stopEditingWhenCellsLoseFocus={true}
+                  pagination={true}
+                  paginationPageSize={15}
+              />
             </div>
-          ) : null}
-          <div className="grid-res">
-          <AgGridReact
-              onGridReady={handleGridReady}
-              rowData={rowData}
-              columnDefs={
-                colDefs.length > 0
-                  ? [
-                      ...colDefs,
-                      {
-                        headerName: "Actions",
-                        field: "actions",
-                        cellRenderer: deleteButtonRenderer,
-                        width: 150,
-                        pinned: "right",
-                      },
-                    ]
-                  : colDefs
-              }
-              defaultColDef={defaultColDef}
-              pagination={true}
-              paginationPageSize={15}
-              fullWidthCellRenderer={3}
-            />
           </div>
         </div>
       </div>
-    </div>
   );
 }

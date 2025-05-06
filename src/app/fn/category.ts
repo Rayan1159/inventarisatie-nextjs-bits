@@ -110,18 +110,33 @@ export const setCategoryItems = async (category: string, items: Record<string, a
         body: JSON.stringify({category, items})
     });
     return response.json();
-}   
-
-export const addItemValue = async (category: string, item: string, value: string, id: number) => {
-    const response = await fetch(`http://localhost:8000/database/inventory/categories/values/update`, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({category, item, value, id})
-    });
-    return response.json();
 }
+
+export const addItemValue = async (category, item, value, id) => {
+    try {
+        const response = await fetch('/inventory/categories/values/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                category,
+                item,
+                value,
+                id
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update value');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error updating value:', error);
+        throw error;
+    }
+};
 
 export const deleteCategoryItem = async (category: string, item: string) => {
     return fetch(`http://localhost:8000/database/inventory/categories/values/delete`, {
