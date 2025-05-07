@@ -204,6 +204,19 @@ export default function Dashboard() {
     editable: true,
   }), [activeCategory, hasPermission]);
 
+  const saveGridState = () => {
+    if (gridApi) {
+      const gridState = {
+        columnState: gridApi.getColumnState(),
+        filterState: gridApi.getFilterModel(),
+        sortState: gridApi.getSortModel(),
+        rowData: rowData
+      };
+      localStorage.setItem('gridState', JSON.stringify(gridState));
+    }
+  };
+
+
   const handleCellEditingStopped = useCallback(async (params) => {
     if (!hasPermission()) return;
 
@@ -216,10 +229,21 @@ export default function Dashboard() {
                 row.id === data.id ? { ...row, [colDef.field]: newValue } : row
             )
         );
+        saveGridState(); // Save state after successful edit
       }
     }
-  }, [activeCategory, hasPermission, saveCell]);
+  }, [activeCategory, hasPermission, saveCell, gridApi, rowData]);;
 
+  const restoreGridState = () => {
+    const savedState = localStorage.getItem('gridState');
+    if (savedState && gridApi) {
+      const state = JSON.parse(savedState);
+      gridApi.setColumnState(state.columnState);
+      gridApi.setFilterModel(state.filterModel);
+      gridApi.setSortModel(state.sortModel);
+      // Be careful with directly setting rowData as it might conflict with your API data
+    }
+  };
 
   const categoryOnChange = (event) => {
     if (event.target == null) return;
