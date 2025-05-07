@@ -24,6 +24,7 @@ import Modal from '@mui/material/Modal';
 
 export default function Dashboard() {
   const [activeCategory, setCategory] = useState("");
+  const [newCat, setNewCat] = useState("");
   const [permissionLevel, setPermissionLevel] = useState(0);
   const [colDefs, setColDefs] = useState([]);
   const [rowData, setRowData] = useState([]);
@@ -192,8 +193,6 @@ export default function Dashboard() {
       return false;
     }
 
-    if (!field || field === 'id' || !id) return false;
-
     try {
       if (value !== null && value !== "") {
         await addItemValue(category, field, value, id);
@@ -210,32 +209,28 @@ export default function Dashboard() {
   const defaultColDef = useMemo(() => ({
     flex: 1,
     editable: true,
-    onCellEditingStopped: async (params) => {
-      if (!hasPermission()) {
-        alert("Je hebt geen permissie om items te bewerken");
-        return;
-      }
-
-      const { data, colDef, newValue } = params;
-      if (colDef && colDef.field && colDef.field !== 'id') {
-        try {
-          await addItemValue(activeCategory, colDef.field, newValue, data.id);
-          setRowData((prev) =>
-              prev.map((row) =>
-                  row.id === data.id ? { ...row, [colDef.field]: newValue } : row
-              )
-          );
-        } catch (error) {
-          console.error("Failed to save data:", error);
-          alert("Fout bij het opslaan van gegevens. Probeer het opnieuw.");
-        }
-      }
-    },
   }), [activeCategory, hasPermission]);
+
+  const handleCellEditingStopped = useCallback(async (params) => {
+    if (!hasPermission()) return;
+
+    const { data, colDef, newValue } = params;
+    if (colDef && colDef.field && colDef.field !== 'id') {
+      const success = await saveCell(activeCategory, colDef.field, newValue, data.id);
+      if (success) {
+        setRowData((prev) =>
+            prev.map((row) =>
+                row.id === data.id ? { ...row, [colDef.field]: newValue } : row
+            )
+        );
+      }
+    }
+  }, [activeCategory, hasPermission, saveCell]);
+
 
   const categoryOnChange = (event) => {
     if (event.target == null) return;
-    setCategory(event.target.value);
+    setNewCat(event.target.value);
   };
 
   const addNewCategory = useCallback(async () => {
@@ -250,7 +245,7 @@ export default function Dashboard() {
     }
 
     try {
-      await setNewCategory(activeCategory);
+      await setNewCategory(newCat);
       handleClose("modalTwo")();
       reloadGrid(activeCategory);
     } catch (error) {
@@ -373,7 +368,6 @@ export default function Dashboard() {
                     label="Category"
                     variant="outlined"
                     name="category"
-                    value={activeCategory}
                     onChange={categoryOnChange}
                 />
 
@@ -438,6 +432,7 @@ export default function Dashboard() {
             <div className="grid-res">
               <AgGridReact
                   onGridReady={handleGridReady}
+                  onCellEditingStopped={handleCellEditingStopped}
                   rowData={rowData}
                   columnDefs={
                     colDefs.length > 0

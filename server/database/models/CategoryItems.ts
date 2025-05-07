@@ -100,13 +100,10 @@ export class CategoryItems extends Model<CategoryItemsAttributes, CategoryItemsA
         try {
             const result = await CategoryItems.update({
                 item_value: value,
-                entry_id: entryId
             }, {
                 where: {
                     category_id: catid,
                     item_name: item,
-                    item_value: item,
-                    entry_id: entryId
                 }
             });
 

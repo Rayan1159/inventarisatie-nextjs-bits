@@ -114,7 +114,7 @@ export const setCategoryItems = async (category: string, items: Record<string, a
 
 export const addItemValue = async (category, item, value, id) => {
     try {
-        const response = await fetch('/inventory/categories/values/update', {
+        const response = await fetch('http://localhost:8000/database/inventory/categories/values/update', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
