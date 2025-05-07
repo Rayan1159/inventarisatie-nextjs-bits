@@ -91,13 +91,6 @@ export default function Dashboard() {
       if (response.exists) {
         const inventoryKeys = await getCategoryInventoryKeys(category);
         const newColDefs = [
-          {
-            field: 'id',
-            headerName: 'ID',
-            editable: false,
-            filter: true,
-            width: 100
-          },
           ...inventoryKeys.map(value => ({
             field: value,
             editable: hasPermission()
@@ -239,7 +232,7 @@ export default function Dashboard() {
       return;
     }
 
-    if (!activeCategory) {
+    if (!newCat) {
       alert("Category name cannot be empty");
       return;
     }
