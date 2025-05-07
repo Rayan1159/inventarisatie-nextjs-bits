@@ -216,11 +216,11 @@ export default function Dashboard() {
     }
   };
 
-
   const handleCellEditingStopped = useCallback(async (params) => {
     if (!hasPermission()) return;
 
     const { data, colDef, newValue } = params;
+    console.log(data, colDef, newValue);
     if (colDef && colDef.field && colDef.field !== 'id') {
       const success = await saveCell(activeCategory, colDef.field, newValue, data.id);
       if (success) {
@@ -229,21 +229,10 @@ export default function Dashboard() {
                 row.id === data.id ? { ...row, [colDef.field]: newValue } : row
             )
         );
-        saveGridState(); // Save state after successful edit
       }
     }
-  }, [activeCategory, hasPermission, saveCell, gridApi, rowData]);;
+  }, [activeCategory, hasPermission, saveCell]);
 
-  const restoreGridState = () => {
-    const savedState = localStorage.getItem('gridState');
-    if (savedState && gridApi) {
-      const state = JSON.parse(savedState);
-      gridApi.setColumnState(state.columnState);
-      gridApi.setFilterModel(state.filterModel);
-      gridApi.setSortModel(state.sortModel);
-      // Be careful with directly setting rowData as it might conflict with your API data
-    }
-  };
 
   const categoryOnChange = (event) => {
     if (event.target == null) return;
@@ -469,6 +458,7 @@ export default function Dashboard() {
                   stopEditingWhenCellsLoseFocus={true}
                   pagination={true}
                   paginationPageSize={15}
+                  getRowId={params => params.data.id.toString()}
               />
             </div>
           </div>
