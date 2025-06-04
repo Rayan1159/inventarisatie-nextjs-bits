@@ -26,7 +26,7 @@ export const getInventoryItems = async (category: string) => {
         console.log('not looking for items here')
         return;
     }
-    const data = await fetch(`http://10.10.3.200:8000/database/inventory`, {
+    const data = await fetch(`http://localhost:8000/database/inventory`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -37,7 +37,7 @@ export const getInventoryItems = async (category: string) => {
 }
 
 export const loadNewCategory = async (category: string) => {
-    const data = await fetch(`http://10.10.3.200:8000/database/inventory/categories`, {
+    const data = await fetch(`http://localhost:8000/database/inventory/categories`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -48,7 +48,7 @@ export const loadNewCategory = async (category: string) => {
 }
 
 export const getCategoryKeys = async () => {
-    const response = await fetch(`http://10.10.3.200:8000/database/inventory/categories/all`, {
+    const response = await fetch(`http://localhost:8000/database/inventory/categories/all`, {
         method: "GET",
         headers: {
             'Content-Type': 'application/json'
@@ -58,7 +58,7 @@ export const getCategoryKeys = async () => {
 }
 
 export const getCategoryInventoryKeys = async (category: string) => {
-    const response = await fetch(`http://10.10.3.200:8000/database/inventory/categories/content/keys`, {
+    const response = await fetch(`http://localhost:8000/database/inventory/categories/content/keys`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -69,7 +69,7 @@ export const getCategoryInventoryKeys = async (category: string) => {
 }
 
 export const setCategoryColumns = async (category: string, items: Record<string, any>) => {
-    const response = await fetch(`http://10.10.3.200:8000/database/inventory/categories/items/update`, {
+    const response = await fetch(`hhttp://localhost:8000/database/inventory/categories/items/update`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -80,7 +80,7 @@ export const setCategoryColumns = async (category: string, items: Record<string,
 }   
 
 export const addColumnValue = async (category: string, column: string) => {
-    const response = await fetch(`http://10.10.3.200:8000/database/inventory/categories/column/add`, {
+    const response = await fetch(`http://localhost:8000/database/inventory/categories/column/add`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -91,7 +91,7 @@ export const addColumnValue = async (category: string, column: string) => {
 }
 
 export const getCategoryValues = async (category: string) => {
-    const response = await fetch(`http://10.10.3.200:8000/database/inventory/categories/values`, {
+    const response = await fetch(`http://localhost:8000/database/inventory/categories/values`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -102,7 +102,7 @@ export const getCategoryValues = async (category: string) => {
 }
 
 export const setCategoryItems = async (category: string, items: Record<string, any>) => {
-    const response = await fetch(`http://10.10.3.200:8000/database/inventory/categories/items/update`, {
+    const response = await fetch(`http://localhost:8000/database/inventory/categories/items/update`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -114,7 +114,7 @@ export const setCategoryItems = async (category: string, items: Record<string, a
 
 export const addItemValue = async (category, item, value, id) => {
     try {
-        const response = await fetch('http://10.10.3.200:8000/database/inventory/categories/values/update', {
+        const response = await fetch('http://localhost:8000/database/inventory/categories/values/update', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ export const addItemValue = async (category, item, value, id) => {
 };
 
 export const deleteCategoryItem = async (category: string, item: string) => {
-    return fetch(`http://10.10.3.200:8000/database/inventory/categories/values/delete`, {
+    return fetch(`http://localhost:8000/database/inventory/categories/values/delete`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -150,7 +150,7 @@ export const deleteCategoryItem = async (category: string, item: string) => {
 
 export const createNewEntry = async (category: string) => {
     console.log(category);
-    const response = await fetch(`http://10.10.3.200:8000/database/entry/create`, {
+    const response = await fetch(`http://localhost:8000/database/entry/create`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'

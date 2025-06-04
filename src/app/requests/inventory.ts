@@ -2,7 +2,7 @@ let baseurl: string;
 const env: string = "dev";
 
 (async () => {
-  baseurl = env === "dev" ? "http://10.10.3.200:8000" : "https://10.10.2.254:8000";
+  baseurl = "http://localhost:8000"
 })();
 
 export const setNewCategory = async (category: string) => {

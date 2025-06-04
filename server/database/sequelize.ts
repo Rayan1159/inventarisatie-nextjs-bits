@@ -5,7 +5,7 @@ const p = pino.default({
   level: "info",
 });
 
-const sequelize = new database("inv", "root", "", {
+const sequelize = new database("inv", "bits", "admin", {
 host: "localhost",
   port: 3306,
   dialect: "mysql",
