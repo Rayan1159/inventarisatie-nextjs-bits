@@ -8,3 +8,14 @@
 
  ✓ Starting...
  ✓ Ready in 1621ms
+ ○ Compiling / ...
+ ✓ Compiled / in 8.3s
+ GET / 200 in 8893ms
+ ✓ Compiled /_not-found/page in 290ms
+ GET /backup.tsx 404 in 592ms
+ GET / 200 in 312ms
+ GET /dashboard 404 in 883ms
+ ○ Compiling /authenticated/dashboard ...
+ ✓ Compiled /authenticated/dashboard in 4.2s
+ GET /authenticated/dashboard 200 in 4860ms
+ GET /authenticated/dashboard 200 in 263ms

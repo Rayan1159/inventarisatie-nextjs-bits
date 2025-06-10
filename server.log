@@ -84,3 +84,49 @@ Update/Create successful
 Update successful
 {"level":30,"time":1749580519933,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory' LIMIT 1;"}
 {"level":30,"time":1749580519935,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `category_id`, `item_name`, `item_value`, `entry_id` FROM `category_items` AS `category_items` WHERE `category_items`.`category_id` = 1;"}
+{"level":30,"time":1749580852989,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `categories` (`id`,`name`) VALUES (DEFAULT,?);"}
+{"level":30,"time":1749580891188,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `categories` (`id`,`name`) VALUES (DEFAULT,?);"}
+{"level":30,"time":1749580891196,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory_551c47be' LIMIT 1;"}
+{"level":30,"time":1749580891199,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`item_name`) VALUES (DEFAULT,?,?);"}
+{"level":30,"time":1749580891211,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory_551c47be' LIMIT 1;"}
+{"level":30,"time":1749580891213,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`item_name`) VALUES (DEFAULT,?,?);"}
+{"level":30,"time":1749580891229,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory_551c47be' LIMIT 1;"}
+{"level":30,"time":1749580891231,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `item_name` FROM `category_items` AS `category_items` WHERE `category_items`.`category_id` = 3 GROUP BY `item_name`;"}
+{"level":30,"time":1749580891233,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`entry_id`) VALUES (DEFAULT,?,?);"}
+{"level":30,"time":1749580891235,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): UPDATE `category_items` SET `entry_id`=? WHERE `id` = ?"}
+{"level":30,"time":1749580891258,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`item_name`,`item_value`,`entry_id`) VALUES (DEFAULT,?,?,?,?);"}
+{"level":30,"time":1749580891287,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`item_name`,`item_value`,`entry_id`) VALUES (DEFAULT,?,?,?,?);"}
+Created new entry 11 with 2 column placeholders
+{"level":30,"time":1749580891294,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory_551c47be' LIMIT 1;"}
+{"level":30,"time":1749580891295,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `item_name` FROM `category_items` AS `category_items` WHERE `category_items`.`category_id` = 3 GROUP BY `item_name`;"}
+{"level":30,"time":1749580891296,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`entry_id`) VALUES (DEFAULT,?,?);"}
+{"level":30,"time":1749580891298,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): UPDATE `category_items` SET `entry_id`=? WHERE `id` = ?"}
+{"level":30,"time":1749580891301,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`item_name`,`item_value`,`entry_id`) VALUES (DEFAULT,?,?,?,?);"}
+{"level":30,"time":1749580891302,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`item_name`,`item_value`,`entry_id`) VALUES (DEFAULT,?,?,?,?);"}
+Created new entry 14 with 3 column placeholders
+Updating item: {
+  category: 'TestCategory_551c47be',
+  item: 'Name',
+  value: 'First Item',
+  id: 11
+}
+{"level":30,"time":1749580891316,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory_551c47be' LIMIT 1;"}
+Category ID: 3
+Executing update with: { catid: 3, item: 'Name', value: 'First Item', entryId: 11 }
+{"level":30,"time":1749580891319,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): UPDATE `category_items` SET `item_value`=? WHERE `category_id` = ? AND `item_name` = ? AND `entry_id` = ?"}
+Update/Create successful
+Update successful
+Updating item: {
+  category: 'TestCategory_551c47be',
+  item: 'Name',
+  value: 'Second Item',
+  id: 14
+}
+{"level":30,"time":1749580891339,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory_551c47be' LIMIT 1;"}
+Category ID: 3
+Executing update with: { catid: 3, item: 'Name', value: 'Second Item', entryId: 14 }
+{"level":30,"time":1749580891345,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): UPDATE `category_items` SET `item_value`=? WHERE `category_id` = ? AND `item_name` = ? AND `entry_id` = ?"}
+Update/Create successful
+Update successful
+{"level":30,"time":1749580891392,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory_551c47be' LIMIT 1;"}
+{"level":30,"time":1749580891393,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `category_id`, `item_name`, `item_value`, `entry_id` FROM `category_items` AS `category_items` WHERE `category_items`.`category_id` = 3;"}
