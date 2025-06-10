@@ -1,0 +1,19 @@
+[NX Daemon Server] - 2025-06-10T18:32:17.286Z - Started listening on: /tmp/f53b52ad6d21cceb72df/d.sock
+[NX Daemon Server] - 2025-06-10T18:32:17.290Z - [WATCHER]: Subscribed to changes within: /app (native)
+[NX Daemon Server] - 2025-06-10T18:32:17.296Z - Established a connection. Number of open connections: 1
+[NX Daemon Server] - 2025-06-10T18:32:17.297Z - Established a connection. Number of open connections: 2
+[NX Daemon Server] - 2025-06-10T18:32:17.299Z - Closed a connection. Number of open connections: 1
+[NX Daemon Server] - 2025-06-10T18:32:17.300Z - [REQUEST]: Responding to the client. Shutdown initiated
+[NX Daemon Server] - 2025-06-10T18:32:17.301Z - Done responding to the client Shutdown initiated
+[NX Daemon Server] - 2025-06-10T18:32:17.301Z - Handled FORCE_SHUTDOWN. Handling time: 0. Response time: 1.
+[NX Daemon Server] - 2025-06-10T18:32:17.302Z - Closed a connection. Number of open connections: 0
+[NX Daemon Server] - 2025-06-10T18:32:17.462Z - Time taken for 'loadSpecifiedNxPlugins' 7.724359999999933ms
+[NX Daemon Server] - 2025-06-10T18:32:17.510Z - [WATCHER]: Stopping the watcher for /app (sources)
+[NX Daemon Server] - 2025-06-10T18:32:18.414Z - Time taken for 'Load Nx Plugin: /app/node_modules/nx/src/plugins/project-json/build-nodes/project-json' 1015.380248ms
+[NX Daemon Server] - 2025-06-10T18:32:18.606Z - Time taken for 'Load Nx Plugin: /app/node_modules/nx/src/plugins/package-json' 1213.914506ms
+[NX Daemon Server] - 2025-06-10T18:32:18.784Z - [REQUEST]: Updated workspace context based on watched changes, recomputing project graph...
+[NX Daemon Server] - 2025-06-10T18:32:18.785Z - [REQUEST]: 
+[NX Daemon Server] - 2025-06-10T18:32:18.785Z - [REQUEST]: 
+[NX Daemon Server] - 2025-06-10T18:32:18.796Z - Time taken for 'loadDefaultNxPlugins' 1392.3157669999998ms
+[NX Daemon Server] - 2025-06-10T18:32:19.102Z - [WATCHER]: Stopping the watcher for /app (outputs)
+[NX Daemon Server] - 2025-06-10T18:32:19.102Z - Server stopped because: "Request to shutdown"

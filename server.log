@@ -1,0 +1,86 @@
+De server draait op port 8000
+{"level":30,"time":1749580440729,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT 1+1 AS result"}
+Verbinding met de database is actief
+{"level":30,"time":1749580440730,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'categories' AND TABLE_SCHEMA = 'inv'"}
+{"level":30,"time":1749580440784,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): CREATE TABLE IF NOT EXISTS `categories` (`id` INTEGER auto_increment , `name` VARCHAR(255) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB;"}
+{"level":30,"time":1749580440794,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SHOW INDEX FROM `categories`"}
+{"level":30,"time":1749580440798,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'category_items' AND TABLE_SCHEMA = 'inv'"}
+{"level":30,"time":1749580440800,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): CREATE TABLE IF NOT EXISTS `category_items` (`id` INTEGER NOT NULL auto_increment , `category_id` INTEGER NOT NULL, `item_name` VARCHAR(255), `item_value` VARCHAR(255), `entry_id` INTEGER, PRIMARY KEY (`id`)) ENGINE=InnoDB;"}
+{"level":30,"time":1749580440807,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SHOW INDEX FROM `category_items`"}
+{"level":30,"time":1749580440809,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'users' AND TABLE_SCHEMA = 'inv'"}
+{"level":30,"time":1749580440811,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER auto_increment , `username` VARCHAR(255) NOT NULL, `password` VARCHAR(255) NOT NULL, `session_id` VARCHAR(255), `permission_level` INTEGER, PRIMARY KEY (`id`)) ENGINE=InnoDB;"}
+{"level":30,"time":1749580440816,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SHOW INDEX FROM `users`"}
+{"level":30,"time":1749580440818,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'inventory' AND TABLE_SCHEMA = 'inv'"}
+{"level":30,"time":1749580440820,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): CREATE TABLE IF NOT EXISTS `inventory` (`id` INTEGER auto_increment , `name` VARCHAR(255) NOT NULL, `description` VARCHAR(255) NOT NULL, `additional` VARCHAR(255) NOT NULL, `place` VARCHAR(255) NOT NULL, `processor` VARCHAR(255) NOT NULL, `ram` VARCHAR(255) NOT NULL, `drive` VARCHAR(255) NOT NULL, `power_cable` VARCHAR(255) NOT NULL, `needs_additional` TINYINT(1) NOT NULL, `recent_actions` VARCHAR(255) NOT NULL, `required_action` VARCHAR(255) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB;"}
+{"level":30,"time":1749580440825,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SHOW INDEX FROM `inventory`"}
+Database synchroniseren
+Database gesynchroniseerd
+{"level":30,"time":1749580469539,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `categories` (`id`,`name`) VALUES (DEFAULT,?);"}
+{"level":30,"time":1749580477855,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory' LIMIT 1;"}
+{"level":30,"time":1749580477858,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`item_name`) VALUES (DEFAULT,?,?);"}
+{"level":30,"time":1749580483744,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory' LIMIT 1;"}
+{"level":30,"time":1749580483746,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`item_name`) VALUES (DEFAULT,?,?);"}
+{"level":30,"time":1749580488724,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory' LIMIT 1;"}
+{"level":30,"time":1749580488726,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `item_name` FROM `category_items` AS `category_items` WHERE `category_items`.`category_id` = 1 GROUP BY `item_name`;"}
+{"level":30,"time":1749580488728,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`entry_id`) VALUES (DEFAULT,?,?);"}
+{"level":30,"time":1749580488732,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): UPDATE `category_items` SET `entry_id`=? WHERE `id` = ?"}
+{"level":30,"time":1749580488735,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`item_name`,`item_value`,`entry_id`) VALUES (DEFAULT,?,?,?,?);"}
+{"level":30,"time":1749580488737,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`item_name`,`item_value`,`entry_id`) VALUES (DEFAULT,?,?,?,?);"}
+Created new entry 3 with 2 column placeholders
+{"level":30,"time":1749580493176,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory' LIMIT 1;"}
+{"level":30,"time":1749580493177,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `item_name` FROM `category_items` AS `category_items` WHERE `category_items`.`category_id` = 1 GROUP BY `item_name`;"}
+{"level":30,"time":1749580493179,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`entry_id`) VALUES (DEFAULT,?,?);"}
+{"level":30,"time":1749580493181,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): UPDATE `category_items` SET `entry_id`=? WHERE `id` = ?"}
+{"level":30,"time":1749580493184,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`item_name`,`item_value`,`entry_id`) VALUES (DEFAULT,?,?,?,?);"}
+{"level":30,"time":1749580493186,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): INSERT INTO `category_items` (`id`,`category_id`,`item_name`,`item_value`,`entry_id`) VALUES (DEFAULT,?,?,?,?);"}
+Created new entry 6 with 3 column placeholders
+Updating item: { category: 'TestCategory', item: 'Name', value: 'Row 1 Name', id: 3 }
+{"level":30,"time":1749580499230,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory' LIMIT 1;"}
+Category ID: 1
+Executing update with: { catid: 1, item: 'Name', value: 'Row 1 Name', entryId: 3 }
+{"level":30,"time":1749580499233,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): UPDATE `category_items` SET `item_value`=? WHERE `category_id` = ? AND `item_name` = ? AND `entry_id` = ?"}
+Update/Create successful
+Update successful
+Updating item: { category: 'TestCategory', item: 'Name', value: 'Row 2 Name', id: 6 }
+{"level":30,"time":1749580503487,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory' LIMIT 1;"}
+Category ID: 1
+Executing update with: { catid: 1, item: 'Name', value: 'Row 2 Name', entryId: 6 }
+{"level":30,"time":1749580503490,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): UPDATE `category_items` SET `item_value`=? WHERE `category_id` = ? AND `item_name` = ? AND `entry_id` = ?"}
+Update/Create successful
+Update successful
+Updating item: {
+  category: 'TestCategory',
+  item: 'Description',
+  value: 'Row 1 Description',
+  id: 3
+}
+{"level":30,"time":1749580509166,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory' LIMIT 1;"}
+Category ID: 1
+Executing update with: {
+  catid: 1,
+  item: 'Description',
+  value: 'Row 1 Description',
+  entryId: 3
+}
+{"level":30,"time":1749580509167,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): UPDATE `category_items` SET `item_value`=? WHERE `category_id` = ? AND `item_name` = ? AND `entry_id` = ?"}
+Update/Create successful
+Update successful
+Updating item: {
+  category: 'TestCategory',
+  item: 'Description',
+  value: 'Row 2 Description',
+  id: 6
+}
+{"level":30,"time":1749580514924,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory' LIMIT 1;"}
+Category ID: 1
+Executing update with: {
+  catid: 1,
+  item: 'Description',
+  value: 'Row 2 Description',
+  entryId: 6
+}
+{"level":30,"time":1749580514926,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): UPDATE `category_items` SET `item_value`=? WHERE `category_id` = ? AND `item_name` = ? AND `entry_id` = ?"}
+Update/Create successful
+Update successful
+{"level":30,"time":1749580519933,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `name` FROM `categories` AS `Category` WHERE `Category`.`name` = 'TestCategory' LIMIT 1;"}
+{"level":30,"time":1749580519935,"pid":1961,"hostname":"agent-env-199aa198-f9c9-4d32-802b-66e3063ceb89","msg":"Executing (default): SELECT `id`, `category_id`, `item_name`, `item_value`, `entry_id` FROM `category_items` AS `category_items` WHERE `category_items`.`category_id` = 1;"}
