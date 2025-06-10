@@ -1,0 +1,52 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+ul {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+}
+
+li {
+    font-size: 1.5rem;
+    font-weight: bolder;
+    list-style: none;
+}
+
+li:not(:first-child) {
+    border-left: 3px solid black;
+    padding-left: 1em;
+}
+
+li a {
+    text-decoration: none;
+    color: white;
+}
+
+a:hover {
+    color: rgb(255, 79, 79);
+}
+
+html {
+    background-image: url(../logo.jpg);
+}
+
+.global-header-wrapper {
+    width: 100%;
+}
+
+.global-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;    
+    width: 100%;
+    height: 7.5vh;
+    background: rgba(32, 122, 136, 0.9);
+}
+
+@media only screen and (max-width: 375px) {
+    /* TODO Responsiveness implementeren */
+}

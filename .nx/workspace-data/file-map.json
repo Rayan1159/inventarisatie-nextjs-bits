@@ -1,0 +1,381 @@
+{
+  "version": "6.0",
+  "nxVersion": "20.3.2",
+  "pathMappings": {
+    "@/*": [
+      "./src/*"
+    ]
+  },
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {
+      "inventarisatie-next": [
+        {
+          "file": ".devcontainer/Dockerfile",
+          "hash": "17219029538341594699"
+        },
+        {
+          "file": ".devcontainer/DockerfileAppBuilderCloud",
+          "hash": "12178563854657120016"
+        },
+        {
+          "file": ".devcontainer/DockerfileJdk17Default",
+          "hash": "6275373681023753965"
+        },
+        {
+          "file": ".devcontainer/DockerfilePythonDefault",
+          "hash": "3090024041846700959"
+        },
+        {
+          "file": ".devcontainer/code_server_config.yaml",
+          "hash": "18256734382638763507"
+        },
+        {
+          "file": ".devcontainer/context_params.json",
+          "hash": "2204262908441912928"
+        },
+        {
+          "file": ".devcontainer/context_params_app_builder.json",
+          "hash": "1268207354223825694"
+        },
+        {
+          "file": ".devcontainer/entrypoint.sh",
+          "hash": "11503110706971106177"
+        },
+        {
+          "file": ".devcontainer/playwright_executor.py",
+          "hash": "11826153285857217849"
+        },
+        {
+          "file": ".devcontainer/playwright_test.py",
+          "hash": "6917282618205606289"
+        },
+        {
+          "file": ".devcontainer/supervisord_code_server.conf",
+          "hash": "13230887508398369469"
+        },
+        {
+          "file": ".devcontainer/supervisord_without_vscode.conf",
+          "hash": "16035413995100222660"
+        },
+        {
+          "file": ".dockerignore",
+          "hash": "15590214585405282810"
+        },
+        {
+          "file": ".emergent/emergent.yml",
+          "hash": "16556958432157539879"
+        },
+        {
+          "file": ".env.example",
+          "hash": "11648582235908323051"
+        },
+        {
+          "file": ".eslintrc.json",
+          "hash": "2410745308925489546"
+        },
+        {
+          "file": ".gitignore",
+          "hash": "15434282930114845710"
+        },
+        {
+          "file": "Dockerfile",
+          "hash": "14046230272518611089"
+        },
+        {
+          "file": "README.md",
+          "hash": "4381602098729120124"
+        },
+        {
+          "file": "backend/.env",
+          "hash": "6472270156853018688"
+        },
+        {
+          "file": "backend/external_integrations/__init__.py",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "backend/requirements.txt",
+          "hash": "2310085390011966944"
+        },
+        {
+          "file": "backend/server.py",
+          "hash": "523077939669461614"
+        },
+        {
+          "file": "backup.tsx",
+          "hash": "2163026416434079991"
+        },
+        {
+          "file": "entrypoint.sh",
+          "hash": "4107161026858199188"
+        },
+        {
+          "file": "frontend/.env",
+          "hash": "2850847268947969706"
+        },
+        {
+          "file": "frontend/.gitignore",
+          "hash": "5403484524555424706"
+        },
+        {
+          "file": "frontend/README.md",
+          "hash": "17524295600495787358"
+        },
+        {
+          "file": "frontend/package.json",
+          "hash": "16648382868251793012"
+        },
+        {
+          "file": "frontend/postcss.config.js",
+          "hash": "1579725330904862112"
+        },
+        {
+          "file": "frontend/public/index.html",
+          "hash": "2690559813094882096"
+        },
+        {
+          "file": "frontend/src/App.css",
+          "hash": "13003966367854827278"
+        },
+        {
+          "file": "frontend/src/App.js",
+          "hash": "12520528318072366765"
+        },
+        {
+          "file": "frontend/src/index.css",
+          "hash": "14685566065480124193"
+        },
+        {
+          "file": "frontend/src/index.js",
+          "hash": "1692555474794136965"
+        },
+        {
+          "file": "frontend/tailwind.config.js",
+          "hash": "12636553981810276944"
+        },
+        {
+          "file": "frontend/yarn.lock",
+          "hash": "2878115479569525242"
+        },
+        {
+          "file": "next.config.ts",
+          "hash": "2635319500386048484"
+        },
+        {
+          "file": "nginx.conf",
+          "hash": "670617241303997525"
+        },
+        {
+          "file": "nx.json",
+          "hash": "6714659482394647974"
+        },
+        {
+          "file": "package-lock.json",
+          "hash": "14141601148115153879"
+        },
+        {
+          "file": "package.json",
+          "hash": "9756607042568238251"
+        },
+        {
+          "file": "public/bits-logo.png",
+          "hash": "17916489163207573582"
+        },
+        {
+          "file": "public/css/Dashboard.css",
+          "hash": "3689821270209811683"
+        },
+        {
+          "file": "public/css/Login.css",
+          "hash": "4128395167365116126"
+        },
+        {
+          "file": "public/css/errors.css",
+          "hash": "2084224489604180515"
+        },
+        {
+          "file": "public/css/global.css",
+          "hash": "3150743449227941048"
+        },
+        {
+          "file": "public/file.svg",
+          "hash": "15617830351863523835"
+        },
+        {
+          "file": "public/globe.svg",
+          "hash": "9134466864871335697"
+        },
+        {
+          "file": "public/logo.jpg",
+          "hash": "15765546323330436793"
+        },
+        {
+          "file": "public/next.svg",
+          "hash": "8300767200008744458"
+        },
+        {
+          "file": "public/vercel.svg",
+          "hash": "3007623926711696394"
+        },
+        {
+          "file": "public/window.svg",
+          "hash": "16677869292061012332"
+        },
+        {
+          "file": "requirements.txt",
+          "hash": "542495533247205234"
+        },
+        {
+          "file": "scripts/update-and-start.sh",
+          "hash": "144175322799866032"
+        },
+        {
+          "file": "server/data/categories.json",
+          "hash": "17547042332535070018"
+        },
+        {
+          "file": "server/database/models/Category.ts",
+          "hash": "3666154893510387836"
+        },
+        {
+          "file": "server/database/models/CategoryItems.ts",
+          "hash": "11468740201318301117"
+        },
+        {
+          "file": "server/database/models/Inventory.ts",
+          "hash": "2388958203977697172"
+        },
+        {
+          "file": "server/database/models/User.ts",
+          "hash": "473605784302773896"
+        },
+        {
+          "file": "server/database/sequelize.ts",
+          "hash": "5856998383524719265"
+        },
+        {
+          "file": "server/enums/permissions.ts",
+          "hash": "2075240435550727953"
+        },
+        {
+          "file": "server/routes/GET.ts",
+          "hash": "13882811386817668466"
+        },
+        {
+          "file": "server/routes/POST.ts",
+          "hash": "15709755282136527387"
+        },
+        {
+          "file": "server/server.ts",
+          "hash": "17467801659021664174"
+        },
+        {
+          "file": "src/app/authenticated/dashboard/[slug].tsx",
+          "hash": "2728962664680633843"
+        },
+        {
+          "file": "src/app/authenticated/dashboard/inventory.tsx",
+          "hash": "13829641108911161793"
+        },
+        {
+          "file": "src/app/authenticated/dashboard/page.tsx",
+          "hash": "7076421264171500370"
+        },
+        {
+          "file": "src/app/bits-logo.png",
+          "hash": "17916489163207573582"
+        },
+        {
+          "file": "src/app/components/AuthCard.tsx",
+          "hash": "16172168821976931436"
+        },
+        {
+          "file": "src/app/components/DashboardHeader.tsx",
+          "hash": "473021504714226302"
+        },
+        {
+          "file": "src/app/components/SubComponents/HeaderNav.tsx",
+          "hash": "621011461149072381"
+        },
+        {
+          "file": "src/app/css/Dashboard.css",
+          "hash": "4995954841776844658"
+        },
+        {
+          "file": "src/app/css/Login.css",
+          "hash": "13196261551311649464"
+        },
+        {
+          "file": "src/app/css/errors.css",
+          "hash": "2084224489604180515"
+        },
+        {
+          "file": "src/app/css/global.css",
+          "hash": "14571912711578989897"
+        },
+        {
+          "file": "src/app/favicon.ico",
+          "hash": "9157999678830540297"
+        },
+        {
+          "file": "src/app/fn/category.ts",
+          "hash": "4312014313553201086"
+        },
+        {
+          "file": "src/app/fonts/GeistMonoVF.woff",
+          "hash": "17799230542345324615"
+        },
+        {
+          "file": "src/app/fonts/GeistVF.woff",
+          "hash": "6578897518916770501"
+        },
+        {
+          "file": "src/app/globals.css",
+          "hash": "2320806684430388580"
+        },
+        {
+          "file": "src/app/layout.tsx",
+          "hash": "12845800638368499942"
+        },
+        {
+          "file": "src/app/logo.jpg",
+          "hash": "15765546323330436793"
+        },
+        {
+          "file": "src/app/logout/page.tsx",
+          "hash": "6507429392845656978"
+        },
+        {
+          "file": "src/app/page.css",
+          "hash": "5811699490998895488"
+        },
+        {
+          "file": "src/app/page.tsx",
+          "hash": "2718572524872110576"
+        },
+        {
+          "file": "src/app/requests/inventory.ts",
+          "hash": "12367591924944073676"
+        },
+        {
+          "file": "test_result.md",
+          "hash": "14816779814381000227"
+        },
+        {
+          "file": "tests/__init__.py",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "tsconfig.json",
+          "hash": "15239542674826856699"
+        },
+        {
+          "file": "yarn.lock",
+          "hash": "6403994625853450743"
+        }
+      ]
+    },
+    "nonProjectFiles": []
+  }
+}
