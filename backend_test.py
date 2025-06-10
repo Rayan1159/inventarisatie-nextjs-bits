@@ -5,7 +5,7 @@ import uuid
 from datetime import datetime
 
 class InventoryAPITester:
-    def __init__(self, base_url="https://199aa198-f9c9-4d32-802b-66e3063ceb89.preview.emergentagent.com"):
+    def __init__(self, base_url="http://localhost:8000"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
@@ -242,8 +242,8 @@ class InventoryAPITester:
         return self.tests_passed == self.tests_run
 
 def main():
-    # Get the backend URL from the frontend .env file
-    tester = InventoryAPITester()
+    # Use the local server URL
+    tester = InventoryAPITester("http://localhost:8000")
     
     # Run all tests
     success = tester.run_all_tests()
